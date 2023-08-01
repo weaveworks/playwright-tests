@@ -60,4 +60,3 @@ class TestApplications:
     def test_open_policy_details_from_app_violations_details_page(self):
         self.applications_page.open_policy_details_from_application_violations_details_page()
         expect(self.page .locator("text=weave.policies.containers-minimum-replica-count")).to_be_visible()
-

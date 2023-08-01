@@ -7,5 +7,3 @@ class Policies:
 
     def open_policy_details_page(self):
         self.page.get_by_role("link", name="Containers Running With Privilege Escalation").click()
-
-

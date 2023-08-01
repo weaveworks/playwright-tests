@@ -42,7 +42,3 @@ def login(setup):
     page = context.new_page()
     page.goto(URL)
     yield page
-
-
-
-
