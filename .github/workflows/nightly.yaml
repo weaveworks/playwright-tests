@@ -11,7 +11,7 @@ env:
   EKSCTL_VERSION: "v0.124.0"
 
 jobs:
-  delete-cluster:
+  test-oidc:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -52,4 +52,4 @@ jobs:
         run: |
           echo "Cluster: ${{ env.CLUSTER_NAME }}"
           eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
-          kubectl get nodes
+          # kubectl get nodes
