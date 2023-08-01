@@ -1,0 +1,55 @@
+name: Test OIDC
+
+on:
+  push:
+    branches: "**"
+  pull_request:
+    branches: "**"
+
+env:
+  AWS_REGION: "eu-north-1"
+  EKSCTL_VERSION: "v0.124.0"
+
+jobs:
+  delete-cluster:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install aws-cli
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install --update
+          aws --version
+
+      - name: Install eksctl
+        run: |
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/${{ env.EKSCTL_VERSION }}/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin
+          eksctl version
+
+      - name: Install kubectl
+        uses: Azure/setup-kubectl@v3.2
+        with:
+          version: v1.23.7
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::894516026745:role/WeaveEksGithubActions
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Export Cluster Name
+        run: |
+          export CLUSTER_NAME=sara-test-oidc
+          echo "CLUSTER_NAME=${CLUSTER_NAME}" >> $GITHUB_ENV
+
+      - name: kubeconfig
+        run: |
+          echo "Cluster: ${{ env.CLUSTER_NAME }}"
+          eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
+          kubectl get nodes
