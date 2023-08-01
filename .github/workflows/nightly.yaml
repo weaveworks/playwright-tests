@@ -1,0 +1,253 @@
+name: nightly
+
+on:
+  push:
+    branches: "**"
+  pull_request:
+    branches: "**"
+  schedule:
+    - cron: "30 22 * * *"
+env:
+  AWS_REGION: "eu-north-1"
+  CLUSTER_NAME: run-playwright-tests-${{ github.run_id }}
+#  URL: https://demo-01.wge.dev.weave.works/
+#  PASSWORD: ${{ secrets.PASSWORD }}
+  USER_NAME: ${{ secrets.USER_NAME }}
+  PASSWORD: ${{ secrets.CLUSTER_CONFIG_PASSWORD }}
+
+jobs:
+  build_and_run_tests:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+    - name : Set URL environment Variable
+      run: |
+        echo "URL=https://${{ env.CLUSTER_NAME }}.eng-sandbox.weave.works" >> $GITHUB_ENV
+
+    - name: Check if the URL variable is available
+      run: |
+        echo ${{ env.URL }}
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        pip install pytest_dotenv
+        pip install pytest-reporter-html1
+
+    - name: Install eksctl
+      run: |
+        ARCH=amd64
+        PLATFORM=$(uname -s)_$ARCH                           
+        curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+
+        curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
+        tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+
+        sudo mv /tmp/eksctl /usr/local/bin
+        eksctl version
+
+    - name: Install aws cli
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+        aws --version
+
+#    - name: Install direnv
+#      run: |
+#        sudo snap install direnv
+#        direnv --version
+
+#    - name: Install npm
+#      run: |
+#        sudo apt install npm
+#        npm --version
+#
+#    - name: Install gsts
+#      run: |
+#        npm install --global gsts
+        
+    - name: Install pre-commit
+      run: |
+        pip install pre-commit
+
+    - name: Install flux
+      run: |
+        curl -s https://fluxcd.io/install.sh | sudo bash
+        flux version --client
+
+#    - name: Install aws-iam-authenticator
+#      run: |
+#        curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
+#        chmod +x ./aws-iam-authenticator
+#        mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
+#        echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
+#        aws-iam-authenticator version
+
+    - name: Install kubectl
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv ./kubectl /usr/local/bin/kubectl
+        kubectl version --client
+
+    - name: Install playwright
+      run: |
+        pip install pytest-playwright
+
+    - name: Install chromium
+      run: |
+        playwright install chromium
+
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: arn:aws:iam::894516026745:role/WeaveEksGithubActions
+        aws-region: ${{ env.AWS_REGION }}
+        aws-session-token: ${{ secrets.ACCESS_TOKEN }}
+
+    - name: Clone cluster-config repository
+      uses: actions/checkout@v2
+      with:
+        repository: weaveworks/clusters-config
+        ref: main
+        path: cluster-config
+        token: ${{ secrets.ACCESS_TOKEN }}
+
+#    - name: Authenticate with WeaveEksEditor role
+#      run: |
+#        cd cluster-config
+#        export GOOGLE_USERNAME=tagreed.anany@weave.works
+#        eval "$(direnv hook bash)"
+#        source ./env.sh
+
+#    - name: Authenticate with WeaveEksEditor role
+#      run: |
+#        cd cluster-config
+#        export AWS_PROFILE=sts
+#        export AWS_ROLE_EKS="arn:aws:iam::894516026745:role/WeaveEksEditor"
+#        export GOOGLE_IDP_ID=C0203uytv
+#        export GOOGLE_SP_ID=656726301855
+#        gsts --aws-region=${{ env.AWS_REGION }} --aws-role-arn "$AWS_ROLE_EKS" --sp-id "$GOOGLE_SP_ID" --idp-id "$GOOGLE_IDP_ID" --username tagreed.anany@weave.works --headless="True"
+#
+
+
+    - name: Create test cluster
+      run: |
+        cd cluster-config
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
+        git add .
+        git commit -m "Add init files"
+        git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
+
+    - name: Sleep 30 minutes for cluster provisioning
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '30m'
+
+    - name: Get cluster kubeconfig file
+      run: |
+        cd cluster-config
+        echo "Cluster: ${{ env.CLUSTER_NAME }}"
+        eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
+        kubectl get nodes
+
+
+    - name: run tests
+      if: success()
+      run: |
+        pytest -s -v --video=retain-on-failure --screenshot=only-on-failure --template=html1/index.html --report=test-results/report.html -o junit_family=xunit2 --junitxml=test-results/junit_tests_report.xml
+
+    - name: Upload test report
+      uses: actions/upload-artifact@v3
+      if: success() || failure()
+      with:
+          name: test-report
+          path: test-results/junit_tests_report.xml
+
+    - name: Download test artifacts
+      uses: actions/download-artifact@v3.0.1
+      if: success() || failure()
+      with:
+        name: test-report
+        path: test-results
+
+    - name: Display structure of downloaded files
+      if: always()
+      run: ls -R
+      working-directory: test-results
+
+    - name: Publish test report
+      id: test_summary
+      uses: mikepenz/action-junit-report@v3.7.6
+      if: success() || failure()
+      with:
+        report_paths: test-results/junit_tests_report.xml
+
+    - name: Notify Slack
+      id: slack
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        channel-id: C058RPVS5DZ
+        payload: |
+          {
+          	"blocks": [
+          		{
+          			"type": "section",
+          			"text": {
+          				"type": "mrkdwn",
+          				"text": "*Tests result:*"
+          			}
+          		},
+          		{
+          			"type": "section",
+          			"text": {
+          				"type": "mrkdwn",
+          				"text": "Tests :test_tube:\t\t\tPassed :check:\t\t\tSkipped :arrow_right_hook:\t\t\tFailed :x:\n>executed:*${{steps.test_summary.outputs.total}}*\t\t\tpassed:*${{steps.test_summary.outputs.passed}}*\t\t\tskipped:*${{steps.test_summary.outputs.skipped}}*\t\t\tfailed:*${{steps.test_summary.outputs.failed}}*"
+          			}
+          		},          
+          		{
+          			"type": "section",
+          			"text": {
+          				"type": "mrkdwn",
+          				"text": "*View result on Github:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          			}
+          		}
+          	]
+          }
+      if: always()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+    - name: Delete cluster's branch
+      if: success() || failure()
+      run: |
+        cd cluster-config
+        git config --global user.email github-actions@github.com
+        git config --global user.name github-actions
+        export BRANCH_NAME=cluster-${{ env.CLUSTER_NAME }}
+        echo "Deleting cluster ${{ env.CLUSTER_NAME }} by deleting its branch ${BRANCH_NAME}!"
+        git push origin --delete ${BRANCH_NAME}
+
+
