@@ -96,7 +96,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1-node16
+      uses: aws-actions/configure-aws-credentials@v2
       with:
         role-to-assume: arn:aws:iam::894516026745:role/WeaveEksGithubActions
         aws-region: ${{ env.AWS_REGION }}
