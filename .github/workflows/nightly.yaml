@@ -107,7 +107,7 @@ jobs:
         repository: weaveworks/clusters-config
         ref: main
         path: cluster-config
-        token: ${{ secrets.ACCESS_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create test cluster
       run: |
