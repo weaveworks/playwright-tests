@@ -48,7 +48,7 @@ jobs:
     - name: Install eksctl
       run: |
         ARCH=amd64
-        PLATFORM=$(uname -s)_$ARCH                           
+        PLATFORM=$(uname -s)_$ARCH
         curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
 
         curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
@@ -64,20 +64,6 @@ jobs:
         sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
         aws --version
 
-#    - name: Install direnv
-#      run: |
-#        sudo snap install direnv
-#        direnv --version
-
-#    - name: Install npm
-#      run: |
-#        sudo apt install npm
-#        npm --version
-#
-#    - name: Install gsts
-#      run: |
-#        npm install --global gsts
-        
     - name: Install pre-commit
       run: |
         pip install pre-commit
@@ -86,14 +72,6 @@ jobs:
       run: |
         curl -s https://fluxcd.io/install.sh | sudo bash
         flux version --client
-
-#    - name: Install aws-iam-authenticator
-#      run: |
-#        curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
-#        chmod +x ./aws-iam-authenticator
-#        mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
-#        echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
-#        aws-iam-authenticator version
 
     - name: Install kubectl
       run: |
@@ -118,11 +96,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v2
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         role-to-assume: arn:aws:iam::894516026745:role/WeaveEksGithubActions
         aws-region: ${{ env.AWS_REGION }}
-        aws-session-token: ${{ secrets.ACCESS_TOKEN }}
 
     - name: Clone cluster-config repository
       uses: actions/checkout@v2
@@ -131,24 +108,6 @@ jobs:
         ref: main
         path: cluster-config
         token: ${{ secrets.ACCESS_TOKEN }}
-
-#    - name: Authenticate with WeaveEksEditor role
-#      run: |
-#        cd cluster-config
-#        export GOOGLE_USERNAME=tagreed.anany@weave.works
-#        eval "$(direnv hook bash)"
-#        source ./env.sh
-
-#    - name: Authenticate with WeaveEksEditor role
-#      run: |
-#        cd cluster-config
-#        export AWS_PROFILE=sts
-#        export AWS_ROLE_EKS="arn:aws:iam::894516026745:role/WeaveEksEditor"
-#        export GOOGLE_IDP_ID=C0203uytv
-#        export GOOGLE_SP_ID=656726301855
-#        gsts --aws-region=${{ env.AWS_REGION }} --aws-role-arn "$AWS_ROLE_EKS" --sp-id "$GOOGLE_SP_ID" --idp-id "$GOOGLE_IDP_ID" --username tagreed.anany@weave.works --headless="True"
-#
-
 
     - name: Create test cluster
       run: |
@@ -225,7 +184,7 @@ jobs:
           				"type": "mrkdwn",
           				"text": "Tests :test_tube:\t\t\tPassed :check:\t\t\tSkipped :arrow_right_hook:\t\t\tFailed :x:\n>executed:*${{steps.test_summary.outputs.total}}*\t\t\tpassed:*${{steps.test_summary.outputs.passed}}*\t\t\tskipped:*${{steps.test_summary.outputs.skipped}}*\t\t\tfailed:*${{steps.test_summary.outputs.failed}}*"
           			}
-          		},          
+          		},
           		{
           			"type": "section",
           			"text": {
@@ -249,5 +208,3 @@ jobs:
         export BRANCH_NAME=cluster-${{ env.CLUSTER_NAME }}
         echo "Deleting cluster ${{ env.CLUSTER_NAME }} by deleting its branch ${BRANCH_NAME}!"
         git push origin --delete ${BRANCH_NAME}
-
-
