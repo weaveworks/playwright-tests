@@ -10,8 +10,6 @@ on:
 env:
   AWS_REGION: "eu-north-1"
   CLUSTER_NAME: run-playwright-tests-${{ github.run_id }}
-#  URL: https://demo-01.wge.dev.weave.works/
-#  PASSWORD: ${{ secrets.PASSWORD }}
   USER_NAME: wego-admin
   PASSWORD: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
 
