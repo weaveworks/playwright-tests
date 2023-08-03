@@ -2,8 +2,8 @@ import os
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 import pytest
-from utils.helper_methods.helper import install_policies
-from utils.helper_methods.helper import install_violated_app
+# from utils.helper_methods.helper import install_policies
+# from utils.helper_methods.helper import install_violated_app
 from pages.login_page import Login
 
 URL = os.getenv("URL")
@@ -14,8 +14,8 @@ CLUSTER_NAME = os.getenv("CLUSTER_NAME")
 
 @pytest.fixture(scope="session")
 def setup(playwright: Playwright):
-    install_policies()
-    install_violated_app()
+    # install_policies()
+    # install_violated_app()
     browser = playwright.chromium.launch(slow_mo=1000)
     context = browser.new_context()
     page = context.new_page()
