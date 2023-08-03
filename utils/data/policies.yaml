@@ -1,9 +1,9 @@
 apiVersion: pac.weave.works/v2beta2
 kind: Policy
 metadata:
-  name: weave.policies.container-running-as-root-acceptance-test
+  name: weave.policies.container-running-as-root
 spec:
-  id: weave.policies.container-running-as-root-acceptance-test
+  id: weave.policies.container-running-as-root
   name: Container Running As Root acceptance test
   description: |
     Running as root gives the container full access to all resources in the VM it is running on. Containers should not run with such access rights unless required by design. This Policy enforces that the `securityContext.runAsNonRoot` attribute is set to `true`.
@@ -104,9 +104,9 @@ spec:
 apiVersion: pac.weave.works/v2beta2
 kind: Policy
 metadata:
-  name: weave.policies.containers-read-only-root-filesystem-acceptance-test
+  name: weave.policies.containers-read-only-root-filesystem
 spec:
-  id: weave.policies.containers-read-only-root-filesystem-acceptance-test
+  id: weave.policies.containers-read-only-root-filesystem
   name: Containers Read Only Root Filesystem acceptance test
   description: |
     This Policy will cause a violation if the root file system is not mounted as specified. As a security practice, the root file system should be read-only or expose risk to your nodes if compromised.
@@ -181,9 +181,9 @@ spec:
 apiVersion: pac.weave.works/v2beta2
 kind: Policy
 metadata:
-  name: weave.policies.container-image-pull-policy-acceptance-test
+  name: weave.policies.container-image-pull-policy
 spec:
-  id: weave.policies.container-image-pull-policy-acceptance-test
+  id: weave.policies.container-image-pull-policy
   name: Container Image Pull Policy acceptance test
   description: |
     This Policy is to ensure you are setting a value for your `imagePullPolicy`.
@@ -262,104 +262,9 @@ spec:
 apiVersion: pac.weave.works/v2beta2
 kind: Policy
 metadata:
-  name: weave.policies.containers-running-with-privilege-escalation-acceptance-test
+  name: weave.policies.containers-minimum-replica-count
 spec:
-  id: weave.policies.containers-running-with-privilege-escalation-acceptance-test
-  name: Containers Running With Privilege Escalation acceptance test
-  description: |
-    Containers are running with PrivilegeEscalation configured. Setting this Policy to `true` allows child processes to gain more privileges than its parent process.  
-
-    This Policy gates whether or not a user is allowed to set the security context of a container to `allowPrivilegeEscalation` to `true`. The default value for this is `false` so no child process of a container can gain more privileges than its parent.
-
-    There are 2 parameters for this Policy:
-    - exclude_namespace (string) : This sets a namespace you want to exclude from Policy compliance checking. 
-    - allow_privilege_escalation (bool) : This checks for the value of `allowPrivilegeEscalation` in your spec.
-  how_to_solve: |
-    Check the following path to see what the PrivilegeEscalation value is set to.
-    ```
-    ...
-      spec:
-        containers:
-          securityContext:
-            allowPrivilegeEscalation: <value>
-    ```
-    https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-  category: weave.categories.pod-security
-  provider: kubernetes
-  severity: high
-  targets: {kinds: [Deployment, Job, ReplicationController, ReplicaSet, DaemonSet, StatefulSet, CronJob]}
-  tags: [pci-dss, cis-benchmark, mitre-attack, nist800-190, gdpr, default, soc2-type1]
-  parameters:
-    - name: exclude_namespace
-      type: string
-      required: true
-      value: kube-system
-    - name: allow_privilege_escalation
-      type: boolean
-      required: true
-      value: false
-    - name: exclude_label_key
-      type: string
-      required: false
-      value:
-    - name: exclude_label_value
-      type: string
-      required: false
-      value:
-  code: |-
-    package weave.advisor.podSecurity.privilegeEscalation
-
-    exclude_namespace := input.parameters.exclude_namespace
-    allow_privilege_escalation := input.parameters.allow_privilege_escalation
-    exclude_label_key := input.parameters.exclude_label_key
-    exclude_label_value := input.parameters.exclude_label_value
-
-    violation[result] {
-      some i
-      isExcludedNamespace == false
-      not exclude_namespace == controller_input.metadata.namespace
-      not exclude_label_value == controller_input.metadata.labels[exclude_label_key]
-      containers := controller_spec.containers[i]
-      allow_priv := containers.securityContext.allowPrivilegeEscalation
-      not allow_priv == allow_privilege_escalation
-      result = {
-        "issue detected": true,
-        "msg": sprintf("Container spec.template.spec.containers[%v]  privilegeEscalation should be set to '%v'; detected '%v'", [i, allow_privilege_escalation, allow_priv]),
-        "violating_key": sprintf("spec.template.spec.containers[%v].securityContext.allowPrivilegeEscalation", [i]),
-        "recommended_value": allow_privilege_escalation
-      }
-    }
-
-    isExcludedNamespace  = true {
-      input.review.object.metadata.namespace == exclude_namespace
-    }else = false {true}
-
-    is_array_contains(array,str) {
-      array[_] = str
-    }
-
-    # Controller input
-    controller_input = input.review.object
-
-    # controller_container acts as an iterator to get containers from the template
-    controller_spec = controller_input.spec.template.spec {
-      contains_kind(controller_input.kind, {"StatefulSet" , "DaemonSet", "Deployment", "Job"})
-    } else = controller_input.spec {
-      controller_input.kind == "Pod"
-    } else = controller_input.spec.jobTemplate.spec.template.spec {
-      controller_input.kind == "CronJob"
-    }
-
-    contains_kind(kind, kinds) {
-      kinds[_] = kind
-    }
----
-apiVersion: pac.weave.works/v2beta2
-kind: Policy
-metadata:
-  name: weave.policies.containers-minimum-replica-count-acceptance-test
-spec:
-  id: weave.policies.containers-minimum-replica-count-acceptance-test
+  id: weave.policies.containers-minimum-replica-count
   name: Containers Minimum Replica Count acceptance test
   enabled: false
   description: "Use this Policy to to check the replica count of your workloads. The value set in the Policy is greater than or equal to the amount desired, so if the replica count is lower than what is specified, the Policy will be in violation. \n"
