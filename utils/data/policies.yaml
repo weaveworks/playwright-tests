@@ -4,7 +4,7 @@ metadata:
   name: weave.policies.container-running-as-root
 spec:
   id: weave.policies.container-running-as-root
-  name: Container Running As Root acceptance test
+  name: Container Running As Root
   description: |
     Running as root gives the container full access to all resources in the VM it is running on. Containers should not run with such access rights unless required by design. This Policy enforces that the `securityContext.runAsNonRoot` attribute is set to `true`.
   how_to_solve: |
@@ -107,7 +107,7 @@ metadata:
   name: weave.policies.containers-read-only-root-filesystem
 spec:
   id: weave.policies.containers-read-only-root-filesystem
-  name: Containers Read Only Root Filesystem acceptance test
+  name: Containers Read Only Root Filesystem
   description: |
     This Policy will cause a violation if the root file system is not mounted as specified. As a security practice, the root file system should be read-only or expose risk to your nodes if compromised.
     This Policy requires containers must run with a read-only root filesystem (i.e. no writable layer).
@@ -184,7 +184,7 @@ metadata:
   name: weave.policies.container-image-pull-policy
 spec:
   id: weave.policies.container-image-pull-policy
-  name: Container Image Pull Policy acceptance test
+  name: Container Image Pull Policy
   description: |
     This Policy is to ensure you are setting a value for your `imagePullPolicy`.
     The `imagePullPolicy` and the tag of the image affect when the kubelet attempts to pull the specified image.
@@ -211,7 +211,7 @@ spec:
   - name: policy
     type: string
     required: true
-    value: Always
+    value: IfNotPresent
   - name: exclude_namespace
     type: array
     required: true
@@ -265,7 +265,7 @@ metadata:
   name: weave.policies.containers-minimum-replica-count
 spec:
   id: weave.policies.containers-minimum-replica-count
-  name: Containers Minimum Replica Count acceptance test
+  name: Containers Minimum Replica Count
   enabled: false
   description: "Use this Policy to to check the replica count of your workloads. The value set in the Policy is greater than or equal to the amount desired, so if the replica count is lower than what is specified, the Policy will be in violation. \n"
   how_to_solve: |
