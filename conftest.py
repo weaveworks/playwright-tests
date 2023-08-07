@@ -18,6 +18,7 @@ def setup(playwright: Playwright):
     page.wait_for_load_state("networkidle")
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
     page.goto(URL)
+    page.wait_for_load_state("load")
     page.set_default_timeout(5000)
     login_page = Login(page)
     login_page.get_user_name_textbox().click()
