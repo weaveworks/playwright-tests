@@ -26,12 +26,14 @@ class TestPolicies:
                                       f"&id=weave.policies.containers-running-with-privilege-escalation"
                                       f"&name=Containers%20Running%20With%20Privilege%20Escalation")
 
+
 @pytest.mark.usefixtures("login")
 class TestApplications:
     @pytest.fixture(autouse=True)
     def _create_obj(self, login):
         self.page = login
         self.applications_page = Applications(self.page)
+        self.URL = os.getenv ("URL")
 
     def test_open_applications_page(self):
         self.applications_page.open_application_page()
