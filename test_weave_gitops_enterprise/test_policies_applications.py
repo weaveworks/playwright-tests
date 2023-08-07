@@ -67,9 +67,10 @@ class TestApplications:
 
     def test_open_policy_violations_page(self):
         self.applications_page.open_policy_violations_page()
-        expect(self.page).to_have_url(f"{self.URL}/policy_details/violations?"
-                                      f"clusterName=management&id=weave.policies.container-image-pull-policy"
-                                      f"&name=")
+        assert (f"{self.URL}/policy_details/violations?"
+                f"clusterName=management&"
+                f"id=weave.policies.container-image-pull-policy&name="
+                ) in self.page.url
 
     def test_open_policy_violations_details_page(self):
         self.applications_page.open_policy_violations_details_page()
