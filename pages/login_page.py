@@ -3,7 +3,7 @@ class Login:
         self.page = page
 
     def get_user_name_textbox(self):
-        return self.page.locator("id=email")
+        return self.page.get_by_placeholder("Username")
 
     def get_password_textbox(self):
         return self.page.get_by_placeholder("Password")

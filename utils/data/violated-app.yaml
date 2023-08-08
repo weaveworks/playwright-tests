@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: podinfo
+  name: violated-podinfo
+  namespace: default
 spec:
   minReadySeconds: 3
   revisionHistoryLimit: 5
@@ -12,17 +13,17 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: podinfo
+      app: violated-podinfo
   template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9797"
       labels:
-        app: podinfo
+        app: violated-podinfo
     spec:
       containers:
-      - name: podinfod
+      - name: podinfo
         imagePullPolicy: Always
         image: ghcr.io/stefanprodan/podinfo:6.3.0:latest
         securityContext:

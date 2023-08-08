@@ -10,8 +10,6 @@ on:
 env:
   AWS_REGION: "eu-north-1"
   CLUSTER_NAME: run-playwright-tests-${{ github.run_id }}
-#  URL: https://demo-01.wge.dev.weave.works/
-#  PASSWORD: ${{ secrets.PASSWORD }}
   USER_NAME: wego-admin
   PASSWORD: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
 
@@ -115,6 +113,9 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
+        cp ../utils/data/policies.yaml eksctl-clusters/policies/
+        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}
+        cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
         git add .
         git commit -m "Add init files"
         git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
