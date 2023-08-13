@@ -136,7 +136,7 @@ jobs:
       run: |
         cd cluster-config
         kubectl apply -f ../utils/data/policies.yaml
-        
+
     - name: run tests
       if: success()
       run: |
