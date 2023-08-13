@@ -135,7 +135,7 @@ jobs:
     - name: Install policies
       run: |
         cd cluster-config
-        kubectl apply -f ../utils/data/policies.yaml
+        kubectl apply -f ../utils/data/policies.yam
 
     - name: run tests
       if: success()
