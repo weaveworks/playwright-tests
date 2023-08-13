@@ -106,15 +106,16 @@ jobs:
         ref: main
         path: cluster-config
         token: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
+
     - name: Create test cluster
       run: |
         cd cluster-config
         git config user.name github-actions
         git config user.email github-actions@github.com
         make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
-#        cp ../utils/data/policies.yaml eksctl-clusters/policies/
-#        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}
-#        cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
+        cp ../utils/data/policies.yaml eksctl-clusters/policies/
+        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}
+        cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
         git add .
         git commit -m "Add init files"
         git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
@@ -131,10 +132,6 @@ jobs:
         eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
         kubectl get nodes
 
-    - name: Install policies
-      run: |
-        cd cluster-config
-        kubectl apply -f ../utils/data/policies.yam
 
     - name: run tests
       if: success()
