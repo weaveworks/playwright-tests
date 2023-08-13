@@ -106,7 +106,6 @@ jobs:
         ref: main
         path: cluster-config
         token: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
-
     - name: Create test cluster
       run: |
         cd cluster-config
