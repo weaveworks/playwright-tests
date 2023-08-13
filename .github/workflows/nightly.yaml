@@ -129,6 +129,10 @@ jobs:
         eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
         kubectl get nodes
 
+    - name: Install policies
+      run: |
+        cd cluster-config
+        kubectl apply -f ../utils/data/policies.yaml
 
     - name: run tests
       if: success()
