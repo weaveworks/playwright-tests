@@ -23,8 +23,8 @@ class TestPolicies:
         self.policies_page.open_policy_details_page()
         expect(self.page).to_have_url(f"{self.URL}/policy_details/"
                                       f"details?clusterName=management"
-                                      f"&id=weave.policies.containers-running-with-privilege-escalation"
-                                      f"&name=Containers%20Running%20With%20Privilege%20Escalation")
+                                      f"&id=weave.policies.controller-serviceaccount-tokens-automount"
+                                      f"&nname=Controller%20ServiceAccount%20Tokens%20Automount")
 
 
 @pytest.mark.usefixtures("login")
@@ -33,7 +33,7 @@ class TestApplications:
     def _create_obj(self, login):
         self.page = login
         self.applications_page = Applications(self.page)
-        self.URL = os.getenv ("URL")
+        self.URL = os.getenv("URL")
 
     def test_open_applications_page(self):
         self.applications_page.open_application_page()
@@ -42,37 +42,37 @@ class TestApplications:
     def test_open_application_details_page(self):
         self.applications_page.open_application_details_page()
         expect(self.page).to_have_url(f"{self.URL}/kustomization/"
-                                      "details?clusterName=management&name=flux-system&namespace=flux-system")
+                                      "details?clusterName=management&name=podinfo&namespace=apps")
 
     def test_open_application_yaml(self):
         self.applications_page.open_application_yaml_tab()
-        expect(self.page .get_by_text("kubectl get kustomization flux-system -n flux-system -o yaml")).to_be_visible()
+        expect(self.page .get_by_text("kubectl get kustomization podinfo -n apps -o yaml")).to_be_visible()
 
     # page.pause()
     def test_open_application_violations_page(self):
         self.applications_page.open_application_violations_tab()
         expect(self.page).to_have_url(f"{self.URL}/kustomization/"
-                                      "violations?clusterName=management&name=flux-system&namespace=flux-system")
+                                      "violations?clusterName=management&name=podinfo&namespace=apps")
 
     def test_open_application_violations_details(self):
         self.applications_page.open_application_violations_details()
         assert f"{self.URL}/policy_violation?clusterName=management&id=" in self.page.url
         expect(
-            self.page.get_by_text("Container Image Pull Policy in deployment violated-podinfo (1 occurrences)")
+            self.page.get_by_text("Controller ServiceAccount Tokens Automount in deployment podinfo (1 occurrences)")
         ).to_be_visible()
 
     def test_open_policy_details_from_app_violations_details_page(self):
         self.applications_page.open_policy_details_from_application_violations_details_page()
-        expect(self.page.get_by_text("weave.policies.container-image-pull-policy")).to_be_visible()
+        expect(self.page.get_by_text("weave.policies.controller-serviceaccount-tokens-automount")).to_be_visible()
 
     def test_open_policy_violations_page(self):
         self.applications_page.open_policy_violations_page()
         assert (f"{self.URL}/policy_details/violations?"
-                f"clusterName=management&"
-                f"id=weave.policies.container-image-pull-policy&name="
+                f"clusterName=management"
+                f"&id=weave.policies.controller-serviceaccount-tokens-automount&name="
                 ) in self.page.url
 
     def test_open_policy_violations_details_page(self):
         self.applications_page.open_policy_violations_details_page()
         assert f"{self.URL}/policy_violation?clusterName=management&id=" in self.page.url
-        expect(self.page .locator("text=imagePolicyPolicy must be 'IfNotPresent'; found 'Always'")).to_be_visible()
+        expect(self.page .locator("text= Occurrences ( 1 )")).to_be_visible()

@@ -17,6 +17,7 @@ def setup(playwright: Playwright):
     page = context.new_page()
     page.wait_for_load_state("networkidle")
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
+    print(f"page URL is: {URL}")
     page.goto(URL)
     page.wait_for_load_state("load")
     page.set_default_timeout(5000)
