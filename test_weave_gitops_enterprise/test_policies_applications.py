@@ -24,7 +24,7 @@ class TestPolicies:
         expect(self.page).to_have_url(f"{self.URL}/policy_details/"
                                       f"details?clusterName=management"
                                       f"&id=weave.policies.controller-serviceaccount-tokens-automount"
-                                      f"&nname=Controller%20ServiceAccount%20Tokens%20Automount")
+                                      f"&name=Controller%20ServiceAccount%20Tokens%20Automount")
 
 
 @pytest.mark.usefixtures("login")
