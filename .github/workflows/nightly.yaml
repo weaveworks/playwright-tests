@@ -113,6 +113,7 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --weave-branch main"
+        export CLUSTER_NAME=${{ env.CLUSTER_NAME }}
         mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo
         cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
         cp ../utils/data/violated-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
@@ -120,7 +121,7 @@ jobs:
         git commit -m "Add init files"
         git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
 
-    - name: Wait 30 minutes to provision the cluster
+    - name: Wait 30 minutes for cluster provisioning
       uses: jakejarvis/wait-action@master
       with:
         time: '30m'
@@ -137,10 +138,10 @@ jobs:
         cd cluster-config
         kubectl apply -f ../utils/data/policies.yaml
 
-    - name: Wait 5 minutes to generate violations
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '5m'
+#    - name: Wait 5 minutes to generate violations
+#      uses: jakejarvis/wait-action@master
+#      with:
+#        time: '5m'
 
     - name: run tests
       if: success()
