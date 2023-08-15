@@ -120,7 +120,7 @@ jobs:
         git commit -m "Add init files"
         git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
 
-    - name: Sleep 30 minutes for cluster provisioning
+    - name: Wait 30 minutes to provision the cluster
       uses: jakejarvis/wait-action@master
       with:
         time: '30m'
@@ -136,6 +136,11 @@ jobs:
       run: |
         cd cluster-config
         kubectl apply -f ../utils/data/policies.yaml
+
+    - name: Wait 5 minutes to generate violations
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '5m'
 
     - name: run tests
       if: success()
