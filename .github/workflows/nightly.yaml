@@ -116,7 +116,7 @@ jobs:
         mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo
         cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
         cp ../utils/data/violated-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
-        sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' violated-podinfo-kustomization.yaml
+        sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo-kustomization.yaml
         git add .
         git commit -m "Add init files"
         git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
