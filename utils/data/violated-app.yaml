@@ -23,9 +23,9 @@ spec:
         app: violated-podinfo
     spec:
       containers:
-      - name: podinfo
+      - name: violated-podinfo
         imagePullPolicy: Always
-        image: ghcr.io/stefanprodan/podinfo:6.3.0:latest
+        image: ghcr.io/stefanprodan/podinfo:latest
         securityContext:
           allowPrivilegeEscalation: true
         ports:
