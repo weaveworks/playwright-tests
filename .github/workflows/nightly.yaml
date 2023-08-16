@@ -137,13 +137,16 @@ jobs:
       run: |
         cd cluster-config
         kubectl apply -f ../utils/data/policies.yaml
-        flux reconcile kustomization violated-podinfo -n default || true
-        
 
-#    - name: Wait 5 minutes to generate violations
-#      uses: jakejarvis/wait-action@master
-#      with:
-#        time: '5m'
+    - name: Wait 3 minutes to generate violations
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '3m'
+
+    - name: Flux reconcile
+      run: |
+        cd cluster-config
+        flux reconcile kustomization violated-podinfo -n default || true
 
     - name: run tests
       if: success()
