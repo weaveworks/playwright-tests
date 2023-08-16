@@ -117,7 +117,6 @@ jobs:
         cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
         cp ../utils/data/violated-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
         sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo-kustomization.yaml
-        cp ../utils/data/policies.yaml eksctl-clusters/policies/
         git add .
         git commit -m "Add init files"
         git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
@@ -134,15 +133,15 @@ jobs:
         eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
         kubectl get nodes
 
-#    - name: Install policies
-#      run: |
-#        cd cluster-config
-#        kubectl apply -f ../utils/data/policies.yaml
+    - name: Install policies
+      run: |
+        cd cluster-config
+        kubectl apply -f ../utils/data/policies.yaml
 
-#    - name: Wait 5 minutes to generate violations
-#      uses: jakejarvis/wait-action@master
-#      with:
-#        time: '5m'
+    - name: Wait 5 minutes to generate violations
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '5m'
 
     - name: run tests
       if: success()
