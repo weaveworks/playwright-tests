@@ -138,11 +138,6 @@ jobs:
         cd cluster-config
         kubectl apply -f ../utils/data/policies.yaml
 
-    - name: Wait 3 minutes to generate violations
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '3m'
-
     - name: Flux reconcile
       run: |
         cd cluster-config
