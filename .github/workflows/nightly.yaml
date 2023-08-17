@@ -13,6 +13,7 @@ env:
   USER_NAME: wego-admin
   PASSWORD: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
 
+
 jobs:
   build_and_run_tests:
 
@@ -106,6 +107,7 @@ jobs:
         ref: main
         path: cluster-config
         token: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
+
 
     - name: Create test cluster
       run: |
