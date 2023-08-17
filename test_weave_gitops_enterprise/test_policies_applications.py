@@ -27,6 +27,7 @@ class TestPolicies:
                                       f"&name=Containers%20Minimum%20Replica%20Count")
 
 
+
 @pytest.mark.usefixtures("login")
 class TestApplications:
     @pytest.fixture(autouse=True)
@@ -56,6 +57,7 @@ class TestApplications:
                                       f"violations?clusterName=management"
                                       f"&name=violated-podinfo&namespace=default")
 
+
     def test_open_application_violations_details(self):
         self.applications_page.open_application_violations_details()
         assert f"{self.URL}/policy_violation?clusterName=management&id=" in self.page.url
@@ -73,7 +75,9 @@ class TestApplications:
                                       f"&id=weave.policies.container-image-pull-policy"
                                       f"&name=Container%20Image%20Pull%20Policy")
 
+
     def test_open_policy_violations_details_page(self):
         self.applications_page.open_policy_violations_details_page()
         assert f"{self.URL}/policy_violation?clusterName=management&id=" in self.page.url
         expect(self.page.locator("text=imagePolicyPolicy must be 'IfNotPresent'; found 'Always'")).to_be_visible()
+
