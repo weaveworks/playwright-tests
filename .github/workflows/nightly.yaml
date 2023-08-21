@@ -114,7 +114,7 @@ jobs:
         cd cluster-config
         git config user.name github-actions
         git config user.email github-actions@github.com
-        make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --weave-branch main"
+        make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
         mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo
         cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
         cp ../utils/data/violated-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
@@ -138,11 +138,15 @@ jobs:
     - name: Install policies
       run: |
         cd cluster-config
-        kubectl apply -f ../utils/data/policies.yaml
+        cp ../utils/data/policies.yaml eksctl-clusters/policies/
+        git add .
+        git commit -m "Add policies"
+        git push
 
     - name: Flux reconcile
       run: |
         cd cluster-config
+        flux reconcile kustomization policies -n flux-system
         flux reconcile kustomization violated-podinfo -n default || true
 
     - name: run tests
