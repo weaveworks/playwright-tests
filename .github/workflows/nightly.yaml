@@ -141,6 +141,8 @@ jobs:
         git add .
         git commit -m "Add policies"
         git push
+
+    - name: Wait 1 minute for policies showing up
       uses: jakejarvis/wait-action@master
       with:
         time: '1m'
