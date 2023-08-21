@@ -1,7 +1,7 @@
 name: nightly
 
 on:
-  pull_request:
+  push:
     branches: "**"
   schedule:
     - cron: "30 22 * * *"
@@ -115,7 +115,7 @@ jobs:
         make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
         mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo
         cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
-        cp ../utils/data/violated-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
+        cp ../utils/data/violating-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
         sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo-kustomization.yaml
         git add .
         git commit -m "Add init files"
@@ -145,8 +145,7 @@ jobs:
     - name: Flux reconcile
       run: |
         cd cluster-config
-        flux reconcile kustomization policies -n flux-system
-        flux reconcile kustomization violated-podinfo -n default || true
+        flux reconcile kustomization violating-podinfo -n default || true
 
     - name: run tests
       if: success()

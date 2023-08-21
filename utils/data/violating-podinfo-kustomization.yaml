@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: violated-podinfo
+  name: violating-podinfo
   namespace: default
 spec:
   interval: 10m

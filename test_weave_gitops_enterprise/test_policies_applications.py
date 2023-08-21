@@ -44,18 +44,18 @@ class TestApplications:
         self.applications_page.open_application_details_page()
         expect(self.page).to_have_url(f"{self.URL}/kustomization/"
                                       f"details?clusterName=management"
-                                      f"&name=violated-podinfo&namespace=default")
+                                      f"&name=violating-podinfo&namespace=default")
 
     def test_open_application_yaml(self):
         self.applications_page.open_application_yaml_tab()
-        expect(self.page .get_by_text("kubectl get kustomization violated-podinfo -n default -o yaml")).to_be_visible()
+        expect(self.page .get_by_text("kubectl get kustomization violating-podinfo -n default -o yaml")).to_be_visible()
 
     # page.pause()
     def test_open_application_violations_page(self):
         self.applications_page.open_application_violations_tab()
         expect(self.page).to_have_url(f"{self.URL}/kustomization/"
                                       f"violations?clusterName=management"
-                                      f"&name=violated-podinfo&namespace=default")
+                                      f"&name=violating-podinfo&namespace=default")
 
 
     def test_open_application_violations_details(self):
