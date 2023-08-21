@@ -141,6 +141,9 @@ jobs:
         git add .
         git commit -m "Add policies"
         git push
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '1m'
 
     - name: Flux reconcile
       run: |
