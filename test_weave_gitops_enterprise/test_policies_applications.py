@@ -17,7 +17,7 @@ class TestPolicies:
 
     def test_open_policies_page(self):
         self.policies_page.open_policies_page()
-        expect(self.page).to_have_url(f"{self.URL}/policies")
+        expect(self.page).to_have_url(f"{self.URL}/policies/list")
 
     def test_open_policy_details_page(self):
         self.policies_page.open_policy_details_page()
