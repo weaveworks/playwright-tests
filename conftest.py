@@ -26,7 +26,7 @@ def setup(playwright: Playwright):
     page.get_by_placeholder("Username").press("Tab")
     login_page.get_password_textbox().fill(PASSWORD)
     login_page.get_continue_button().click()
-    expect(page).to_have_url(f"{URL}/clusters/list")
+    expect(page).to_have_url(f"{URL}/clusters")
 
     yield context
     context.tracing.stop(path="test-results/execution-tracing.zip")
