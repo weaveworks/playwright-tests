@@ -1,8 +1,6 @@
 name: nightly
 
 on:
-  push:
-    branches: "**"
   pull_request:
     branches: "**"
   schedule:
