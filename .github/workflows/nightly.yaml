@@ -114,9 +114,9 @@ jobs:
         git config user.email github-actions@github.com
         make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
         mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo
-        cp ../utils/data/violated-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
+        cp ../utils/data/violating-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
         cp ../utils/data/violating-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
-        sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo-kustomization.yaml
+        sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-podinfo-kustomization.yaml
         git add .
         git commit -m "Add init files"
         git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
