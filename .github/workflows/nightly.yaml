@@ -138,6 +138,7 @@ jobs:
     - name: Install policies
       run: |
         cd cluster-config
+        git pull
         cp ../utils/data/policies.yaml eksctl-clusters/policies/
         git add .
         git commit -m "Add policies"
