@@ -8,6 +8,18 @@ class Applications:
     def open_application_details_page(self):
         self.page.get_by_role("link", name="violating-podinfo").first.click()
 
+    def open_application_more_info(self):
+        self.page.get_by_text("More Information").click()
+
+    def open_application_events_tab(self):
+        self.page.get_by_role("tab", name="Events").click()
+
+    def open_application_graph_tab(self):
+        self.page.get_by_role("tab", name="Graph").click()
+
+    def open_application_dependencies_tab(self):
+        self.page.get_by_role("tab", name="Dependencies").click()
+
     def open_application_yaml_tab(self):
         self.page.get_by_role("tab", name="Yaml").click()
 

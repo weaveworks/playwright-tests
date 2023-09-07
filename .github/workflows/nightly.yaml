@@ -113,8 +113,8 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
-        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo
-        cp ../utils/data/violating-app.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violated-podinfo/
+        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps
+        cp ../utils/data/violating-app-manifest.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps/
         cp ../utils/data/violating-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
         sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-podinfo-kustomization.yaml
         git add .
@@ -142,10 +142,10 @@ jobs:
         git commit -m "Add policies"
         git push
 
-    - name: Wait 1 minute for policies showing up
+    - name: Wait 2 minute for policies showing up
       uses: jakejarvis/wait-action@master
       with:
-        time: '1m'
+        time: '2m'
 
     - name: Flux reconcile
       run: |
