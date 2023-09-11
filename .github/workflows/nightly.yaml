@@ -109,7 +109,7 @@ jobs:
 
     - name: Setup management cluster
       run: |
-        ../utils/scripts/mgmt-cluster-setup.sh ${{ env.CLUSTER_NAME }} ${{ env.CLUSTER_REGION }}
+        ./utils/scripts/mgmt-cluster-setup.sh ${{ env.CLUSTER_NAME }} ${{ env.CLUSTER_REGION }}
 
 #    - name: Clone cluster-config repository
 #      uses: actions/checkout@v2
