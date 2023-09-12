@@ -8,6 +8,7 @@ on:
 env:
   AWS_REGION: "eu-north-1"
   CLUSTER_REGION: "us-east-1"
+  MANAGEMENT_CLUSTER_TYPE: "kind"
   CLUSTER_NAME: run-playwright-tests-${{ github.run_id }}
   USER_NAME: wego-admin
   PASSWORD: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
@@ -109,7 +110,7 @@ jobs:
 
     - name: Setup management cluster
       run: |
-        ./utils/scripts/mgmt-cluster-setup.sh ${{ env.CLUSTER_NAME }}
+        ./utils/scripts/mgmt-cluster-setup.sh ${{ env.MANAGEMENT_CLUSTER_TYPE }} ${{ env.CLUSTER_NAME }}
 
 #    - name: Clone cluster-config repository
 #      uses: actions/checkout@v2
@@ -124,7 +125,7 @@ jobs:
 #      run: |
 #        cd cluster-config
 #        git config user.name github-actions
-#        git config user.email github-actions@github.com
+#        git config userinputs:.email github-actions@github.com
 #        make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
 #        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps
 #        cp ../utils/data/violating-app-manifest.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps/
