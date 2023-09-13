@@ -102,59 +102,15 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-#    - name: Configure AWS Credentials
-#      uses: aws-actions/configure-aws-credentials@v2
-#      with:
-#        role-to-assume: arn:aws:iam::894516026745:role/WeaveEksGithubActions
-#        aws-region: ${{ env.AWS_REGION }}
 
     - name: Setup management cluster
       run: |
         ./utils/scripts/mgmt-cluster-setup.sh ${{ env.MANAGEMENT_CLUSTER_TYPE }} $(pwd) ${{ env.CLUSTER_NAME }}
 
-#    - name: Clone cluster-config repository
-#      uses: actions/checkout@v2
-#      with:
-#        repository: weaveworks/clusters-config
-#        ref: main
-#        path: cluster-config
-#        token: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
-#
-#
-#    - name: Create test cluster
-#      run: |
-#        cd cluster-config
-#        git config user.name github-actions
-#        git config userinputs:.email github-actions@github.com
-#        make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
-#        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps
-#        cp ../utils/data/violating-app-manifest.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps/
-#        cp ../utils/data/violating-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
-#        sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-podinfo-kustomization.yaml
-#        git add .
-#        git commit -m "Add init files"
-#        git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
-#
-#    - name: Wait 30 minutes for cluster provisioning
-#      uses: jakejarvis/wait-action@master
-#      with:
-#        time: '30m'
-#
-#    - name: Get cluster kubeconfig file
-#      run: |
-#        cd cluster-config
-#        echo "Cluster: ${{ env.CLUSTER_NAME }}"
-#        eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
-#        kubectl get nodes
+    - name: Bootstrap flux
+      run: |
+        flux install --namespace=flux-system
 
-#    - name: Install policies
-#      run: |
-#        cd cluster-config
-#        git pull
-#        cp ../utils/data/policies.yaml eksctl-clusters/policies/
-#        git add .
-#        git commit -m "Add policies"
-#        git push
     - name: Install cert-manager
       run: |
         kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.4/cert-manager.yaml
@@ -163,6 +119,7 @@ jobs:
     - name: Install policy agent
       run: |
         kubectl apply -f ./utils/data/policy-agent.yaml
+        kubectl get pods -A
 
     - name: Install violating-app
       run: |
@@ -171,18 +128,6 @@ jobs:
     - name: Install policies
       run: |
         kubectl apply -f  ./utils/data/policies.yaml 
-        
-       
-
-#    - name: Wait 2 minute for policies showing up
-#      uses: jakejarvis/wait-action@master
-#      with:
-#        time: '2m'
-#
-#    - name: Flux reconcile
-#      run: |
-#        cd cluster-config
-#        flux reconcile kustomization violating-podinfo -n default || true
 
     - name: run tests
       if: success()
