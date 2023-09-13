@@ -110,7 +110,7 @@ jobs:
 
     - name: Setup management cluster
       run: |
-        ./utils/scripts/mgmt-cluster-setup.sh ${{ env.MANAGEMENT_CLUSTER_TYPE }} ${{ env.CLUSTER_NAME }}
+        ./utils/scripts/mgmt-cluster-setup.sh ${{ env.MANAGEMENT_CLUSTER_TYPE }} $(pwd) ${{ env.CLUSTER_NAME }}
 
 #    - name: Clone cluster-config repository
 #      uses: actions/checkout@v2
@@ -242,12 +242,16 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-    - name: Delete cluster's branch
-      if: success() || failure()
+#    - name: Delete cluster's branch
+#      if: success() || failure()
+#      run: |
+#        cd cluster-config
+#        git config --global user.email github-actions@github.com
+#        git config --global user.name github-actions
+#        export BRANCH_NAME=cluster-${{ env.CLUSTER_NAME }}
+#        echo "Deleting cluster ${{ env.CLUSTER_NAME }} by deleting its branch ${BRANCH_NAME}!"
+#        git push origin --delete ${BRANCH_NAME}
+
+    - name : Delete test cluster
       run: |
-        cd cluster-config
-        git config --global user.email github-actions@github.com
-        git config --global user.name github-actions
-        export BRANCH_NAME=cluster-${{ env.CLUSTER_NAME }}
-        echo "Deleting cluster ${{ env.CLUSTER_NAME }} by deleting its branch ${BRANCH_NAME}!"
-        git push origin --delete ${BRANCH_NAME}
+        kind delete clusters --all
