@@ -155,6 +155,10 @@ jobs:
 #        git add .
 #        git commit -m "Add policies"
 #        git push
+    - name: Install cert-manager
+      run: |
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.4/cert-manager.yaml
+
     - name: Install violating-app
       run: |
         kubectl apply -f  ./utils/data/violating-app-manifest.yaml
@@ -253,5 +257,6 @@ jobs:
 #        git push origin --delete ${BRANCH_NAME}
 
     - name : Delete test cluster
+      if: success() || failure()
       run: |
         kind delete clusters --all
