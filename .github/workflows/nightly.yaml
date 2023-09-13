@@ -158,6 +158,11 @@ jobs:
     - name: Install cert-manager
       run: |
         kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.4/cert-manager.yaml
+        kubectl get pods -A
+
+    - name: Install policy agent
+      run: |
+        kubectl apply -f ./utils/data/policy-agent.yaml
 
     - name: Install violating-app
       run: |
