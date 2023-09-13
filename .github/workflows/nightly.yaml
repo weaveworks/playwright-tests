@@ -157,11 +157,11 @@ jobs:
 #        git push
     - name: Install violating-app
       run: |
-        kubectl apply -f  ../utils/data/violating-app-manifest.yaml
+        kubectl apply -f  ./utils/data/violating-app-manifest.yaml
 
     - name: Install policies
       run: |
-        kubectl apply -f  ../utils/data/policies.yaml 
+        kubectl apply -f  ./utils/data/policies.yaml 
         
        
 
