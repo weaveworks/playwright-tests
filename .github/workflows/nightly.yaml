@@ -110,11 +110,11 @@ jobs:
       run: |
         ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
 
-    - name: Install policy agent
-      run: |
-        kubectl apply -f ./utils/data/policy-agent.yaml
-        kubectl get pods -A
-
+#    - name: Install policy agent
+#      run: |
+#        kubectl apply -f ./utils/data/policy-agent.yaml
+#        kubectl get pods -A
+#
     - name: Install violating-app
       run: |
         kubectl apply -f  ./utils/data/violating-app-manifest.yaml
