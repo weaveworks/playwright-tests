@@ -93,10 +93,6 @@ function setup {
   helmArgs+=( --set "service.targetPorts.https=8000" )
   helmArgs+=( --set "tls.enabled=false" )
   helmArgs+=( --set "config.oidc.enabled=false" )
-#  helmArgs+=( --set "policy-agent.enabled=true" )
-#  helmArgs+=( --set "policy-agent.config.accountId=weaveworks" )
-#  helmArgs+=( --set "policy-agent.config.clusterId=${MANAGEMENT_CLUSTER_CNAME}" )
-#  helmArgs+=( --set "features.progressiveDelivery.enabled=true" )
 
   helm upgrade --install my-mccp wkpv3/mccp --version "${CHART_VERSION}" --namespace flux-system ${helmArgs[@]} --wait
 

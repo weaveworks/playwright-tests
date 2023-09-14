@@ -12,7 +12,7 @@ env:
   CLUSTER_NAME: run-playwright-tests-${{ github.run_id }}
   USER_NAME: wego-admin
   PASSWORD: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
-
+  CLUSTER_ADMIN_PASSWORD_HASH: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
 
 jobs:
   build_and_run_tests:
@@ -102,19 +102,13 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-
     - name: Setup management cluster
       run: |
         ./utils/scripts/mgmt-cluster-setup.sh ${{ env.MANAGEMENT_CLUSTER_TYPE }} $(pwd) ${{ env.CLUSTER_NAME }}
 
-    - name: Bootstrap flux
+    - name: Setup wego enterprise
       run: |
-        flux install --namespace=flux-system
-
-    - name: Install cert-manager
-      run: |
-        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.4/cert-manager.yaml
-        kubectl get pods -A
+        ./utils/scripts/wego-enterprise.sh setup .
 
     - name: Install policy agent
       run: |
