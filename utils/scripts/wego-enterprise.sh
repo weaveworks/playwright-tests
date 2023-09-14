@@ -132,7 +132,7 @@ function setup {
   # Install RBAC for user authentication
   kubectl apply -f ${args[1]}/resources/rbac/user-role-bindings.yaml
 
-  kubectl port-forward -n flux-system svc/clusters-service 8000:8000
+  kubectl port-forward -n flux-system svc/clusters-service 8000:8000 &
 
   kubectl get pods -A
 
