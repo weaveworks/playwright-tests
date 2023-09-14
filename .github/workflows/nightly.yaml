@@ -44,24 +44,24 @@ jobs:
         pip install pytest_dotenv
         pip install pytest-reporter-html1
 
-    - name: Install eksctl
-      run: |
-        ARCH=amd64
-        PLATFORM=$(uname -s)_$ARCH
-        curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
-
-        curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
-        tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
-
-        sudo mv /tmp/eksctl /usr/local/bin
-        eksctl version
-
-    - name: Install aws cli
-      run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-        aws --version
+#    - name: Install eksctl
+#      run: |
+#        ARCH=amd64
+#        PLATFORM=$(uname -s)_$ARCH
+#        curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+#
+#        curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
+#        tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+#
+#        sudo mv /tmp/eksctl /usr/local/bin
+#        eksctl version
+#
+#    - name: Install aws cli
+#      run: |
+#        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+#        unzip awscliv2.zip
+#        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+#        aws --version
 
     - name: Install pre-commit
       run: |
@@ -108,7 +108,7 @@ jobs:
 
     - name: Setup wego enterprise
       run: |
-        ./utils/scripts/wego-enterprise.sh setup .
+        ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
 
     - name: Install policy agent
       run: |

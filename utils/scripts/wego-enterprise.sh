@@ -49,7 +49,7 @@ function setup {
   fi
 
   # Set enterprise cluster CNAME host entry mapping in the /etc/hosts file
-  ${args[1]}/hostname-to-ip.sh ${MANAGEMENT_CLUSTER_CNAME}
+#  ${args[1]}/hostname-to-ip.sh ${MANAGEMENT_CLUSTER_CNAME}
    
   helm repo add wkpv3 https://s3.us-east-1.amazonaws.com/weaveworks-wkp/charts-v3-r2/
   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -93,13 +93,10 @@ function setup {
   helmArgs+=( --set "service.targetPorts.https=8000" )
   helmArgs+=( --set "tls.enabled=false" )
   helmArgs+=( --set "config.oidc.enabled=false" )
+  helmArgs+=( --set "policy-agent.enabled=true" )
 
   helm upgrade --install my-mccp wkpv3/mccp --version "${CHART_VERSION}" --namespace flux-system ${helmArgs[@]} --wait
 
-  
-   # Wait for cluster to settle
-#  kubectl wait --for=condition=Ready --timeout=300s -n flux-system --all pod
-  
   # Install ingress-nginx for tls termination 
   command="helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
             --namespace ingress-nginx --create-namespace \
