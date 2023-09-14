@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-args=("$@")
 ENTERPRISE_CHART_VERSION=0.31.0-9-gdae6755
+
+args=("$@")
 
 if [ -z ${args[0]} ] || ([ ${args[0]} != 'setup' ] && [ ${args[0]} != 'reset' ] && [ ${args[0]} != 'reset_controllers' ])
 then 
@@ -46,7 +47,7 @@ function setup {
       kubectl apply -f ${args[1]}/test/utils/data/rbac/gke-ci-user-cluster-admin-rolebinding.yaml
     fi
   fi
-  
+
   # Set enterprise cluster CNAME host entry mapping in the /etc/hosts file
   ${args[1]}/hostname-to-ip.sh ${MANAGEMENT_CLUSTER_CNAME}
    
@@ -70,11 +71,13 @@ function setup {
   flux install
 
   # Create admin cluster user secret
+  kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
+
   kubectl create secret generic cluster-user-auth \
   --namespace flux-system \
   --from-literal=username=wego-admin \
   --from-literal=password=${CLUSTER_ADMIN_PASSWORD_HASH}
-  
+
   kubectl apply -f ${args[1]}/resources/entitlement-secret.yaml
 
   # Choosing weave-gitops-enterprise chart version to install
@@ -88,30 +91,15 @@ function setup {
   helmArgs=()
   helmArgs+=( --set "service.ports.https=8000" )
   helmArgs+=( --set "service.targetPorts.https=8000" )
-  helmArgs+=( --set "config.git.type=${GIT_PROVIDER}" )
-  helmArgs+=( --set "config.git.hostname=${GIT_PROVIDER_HOSTNAME}" )
-  helmArgs+=( --set "config.capi.repositoryURL=${GIT_REPOSITORY_URL}" )
-  # using default repository path '"./clusters/management/clusters"' so the application reconciliation always happen out of the box
-  # helmArgs+=( --set "config.capi.repositoryPath=./clusters/my-cluster/clusters" )
-  helmArgs+=( --set "config.capi.repositoryClustersPath=./clusters" )
-  helmArgs+=( --set "config.capi.baseBranch=main" )
   helmArgs+=( --set "tls.enabled=false" )
-  helmArgs+=( --set "config.oidc.enabled=true" )
-  helmArgs+=( --set "config.oidc.clientCredentialsSecret=client-credentials" )
-  helmArgs+=( --set "config.oidc.issuerURL=${OIDC_ISSUER_URL}" )
-  helmArgs+=( --set "config.oidc.redirectURL=https://${MANAGEMENT_CLUSTER_CNAME}:${UI_NODEPORT}/oauth2/callback" )
-  helmArgs+=( --set "policy-agent.enabled=true" )
-  helmArgs+=( --set "policy-agent.config.accountId=weaveworks" )
-  helmArgs+=( --set "policy-agent.config.clusterId=${MANAGEMENT_CLUSTER_CNAME}" )
-  helmArgs+=( --set "features.progressiveDelivery.enabled=true" )
-  # Enabling cost estimation
-  helmArgs+=( --set "config.costEstimation.estimationFilter=operatingSystem=Linux" )
-  helmArgs+=( --set "config.costEstimation.apiRegion=us-east-1" )
-  helmArgs+=( --set "extraEnvVars[0].name=WEAVE_GITOPS_FEATURE_COST_ESTIMATION" )
-  helmArgs+=( --set-string "extraEnvVars[0].value=true" )
-  helmArgs+=( --set "extraEnvVarsSecret=aws-pricing" )
+  helmArgs+=( --set "config.oidc.enabled=false" )
+#  helmArgs+=( --set "policy-agent.enabled=true" )
+#  helmArgs+=( --set "policy-agent.config.accountId=weaveworks" )
+#  helmArgs+=( --set "policy-agent.config.clusterId=${MANAGEMENT_CLUSTER_CNAME}" )
+#  helmArgs+=( --set "features.progressiveDelivery.enabled=true" )
 
-  helm install my-mccp wkpv3/mccp --version "${CHART_VERSION}" --namespace flux-system --wait ${helmArgs[@]} --wait
+  helm upgrade --install my-mccp wkpv3/mccp --version "${CHART_VERSION}" --namespace flux-system ${helmArgs[@]} --wait
+
   
    # Wait for cluster to settle
 #  kubectl wait --for=condition=Ready --timeout=300s -n flux-system --all pod
@@ -138,12 +126,12 @@ function setup {
   done  
   kubectl wait --for=condition=Ready --timeout=120s -n ingress-nginx --all pod
   
-  cat ${args[1]}/ingress/certificate-issuer.yaml | \
+  cat ${args[1]}/resources/ingress/certificate-issuer.yaml | \
       sed s,{{HOST_NAME}},"${MANAGEMENT_CLUSTER_CNAME}",g | \
       kubectl apply -f -
   kubectl wait --for=condition=Ready --timeout=60s -n flux-system --all certificate
 
-  cat ${args[1]}/ingress/ingress.yaml | \
+  cat ${args[1]}/resources/ingress/ingress.yaml | \
       sed s,{{HOST_NAME}},${MANAGEMENT_CLUSTER_CNAME},g | \
       kubectl apply -f -
 
