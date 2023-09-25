@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: main
+    branch: change_tests_to_use_kind_cluster
   secretRef:
     name: git-provider-credentials
   url: https://github.com/weaveworks/playwright-tests.git
