@@ -102,7 +102,7 @@ jobs:
 
     - name: Flux reconcile violating app
       run: |
-        flux reconcile kustomization violating-podinfo -n default --with-source || true
+        flux reconcile kustomization violating-podinfo -n default || true
         kubectl get pods -A
 
     - name: run tests
