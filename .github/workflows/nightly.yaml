@@ -91,10 +91,6 @@ jobs:
       run: |
         ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
 
-    - name: Install policies
-      run: |
-        kubectl apply -f  ./utils/data/policies.yaml 
-
     - name: Install violating-app
       run: |
         kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="weave-gitops-bot" --from-literal=password="${{ secrets.WEAVEWORKS_BOT_TOKEN }}"
@@ -104,6 +100,10 @@ jobs:
       run: |
         flux reconcile kustomization violating-podinfo -n default --with-source
         kubectl get pods -A
+
+    - name: Install policies
+      run: |
+        kubectl apply -f  ./utils/data/policies.yaml 
 
     - name: run tests
       if: success()
