@@ -91,18 +91,27 @@ jobs:
       run: |
         ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
 
-    - name: Install policy agent
-      run: |
-        kubectl apply -f ./utils/data/policy-agent.yaml
-        kubectl get pods -A
+#    - name: Install policy agent
+#      run: |
+#        kubectl apply -f ./utils/data/policy-agent.yaml
+#    - name: Install violating-app
+#      run: |
+#        kubectl apply -f  ./utils/data/violating-app-manifest.yaml
 
     - name: Install violating-app
       run: |
-        kubectl apply -f  ./utils/data/violating-app-manifest.yaml
+        kubectl create secret generic git-provider-credentials -n flux-system --from-literal=bearerToken="${{ secrets.WEAVEWORKS_BOT_TOKEN }}"
+        kubectl apply -f  ./utils/data/violating-podinfo-kustomization.yaml
 
     - name: Install policies
       run: |
         kubectl apply -f  ./utils/data/policies.yaml 
+
+    - name: Flux reconcile violating app
+      run: |
+        flux reconcile kustomization violating-podinfo -n default || true
+        kubectl get pods -A
+
 
     - name: run tests
       if: success()
