@@ -71,10 +71,12 @@ function setup {
   flux install
 
   # Create admin cluster user secret
-  kubectl create secret generic cluster-user-auth \
-  --namespace flux-system \
-  --from-literal=username=wego-admin \
-  --from-literal=password=${CLUSTER_ADMIN_PASSWORD_HASH}
+#  kubectl create secret generic cluster-user-auth \
+#  --namespace flux-system \
+#  --from-literal=username=wego-admin \
+#  --from-literal=password=${CLUSTER_ADMIN_PASSWORD_HASH}
+
+  kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
 
   kubectl apply -f ${args[1]}/resources/entitlement-secret.yaml
 
