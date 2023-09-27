@@ -28,8 +28,7 @@ It is recommended to install latest and stable version of these tools. All tools
    
 2. Open it in any IDE like **PyCharm** or **VS Code**<p>&nbsp;</p>
 
-3. Run **Docker Desktop**<p>&nbsp;</p>
-       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for help check this URL `https://docs.docker.com/desktop/install/ubuntu/#launch-docker-desktop` <p>&nbsp;</p>
+3. Launch **Docker Desktop** , for help check this URL [https://docs.docker.com/desktop/install/ubuntu/#launch-docker-desktop](https://docs.docker.com/desktop/install/ubuntu/#launch-docker-desktop) <p>&nbsp;</p>
 
 4. Delete any existing kind cluster(s).
     ```bash
