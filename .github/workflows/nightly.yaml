@@ -178,16 +178,6 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-#    - name: Delete cluster's branch
-#      if: success() || failure()
-#      run: |
-#        cd cluster-config
-#        git config --global user.email github-actions@github.com
-#        git config --global user.name github-actions
-#        export BRANCH_NAME=cluster-${{ env.CLUSTER_NAME }}
-#        echo "Deleting cluster ${{ env.CLUSTER_NAME }} by deleting its branch ${BRANCH_NAME}!"
-#        git push origin --delete ${BRANCH_NAME}
-
     - name : Delete test cluster
       if: success() || failure()
       run: |
