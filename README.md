@@ -47,7 +47,7 @@ It is recommended to install latest and stable version of these tools. All tools
    
 7. Install violating-app.
     ```bash
-    kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="weave-gitops-bot" --from-literal=password="${{ secrets.WEAVEWORKS_BOT_TOKEN }}"
+    kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="$GITHUB_USER" --from-literal=password="$GITHUB_TOKEN"
     sed -i 's/BRANCH_NAME/<your_branch_name>/' ./utils/data/violating-podinfo-kustomization.yaml
     kubectl apply -f  ./utils/data/violating-podinfo-kustomization.yaml
     ```
