@@ -6,8 +6,6 @@ on:
   schedule:
     - cron: "30 22 * * *"
 env:
-  AWS_REGION: "eu-north-1"
-  CLUSTER_REGION: "us-east-1"
   MANAGEMENT_CLUSTER_TYPE: "kind"
   CLUSTER_NAME: run-playwright-tests-${{ github.run_id }}
   USER_NAME: wego-admin
