@@ -76,9 +76,14 @@ function setup {
 #  --from-literal=username=wego-admin \
 #  --from-literal=password=${CLUSTER_ADMIN_PASSWORD_HASH}
 
+  # Create admin cluster user secret
+  kubectl create secret generic sops-gpg \
+  --namespace flux-system \
+  --from-file=sops.asc=${WEAVE_GITOPS_DEV_SOPS_KEY}
+
   kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
 
-  kubectl apply -f ${args[1]}/resources/entitlement-secret.yaml
+#  kubectl apply -f ${args[1]}/resources/entitlement-secret.yaml
 
   # Choosing weave-gitops-enterprise chart version to install
   if [ -z ${ENTERPRISE_CHART_VERSION} ]; then
