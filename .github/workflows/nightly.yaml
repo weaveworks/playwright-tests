@@ -11,6 +11,7 @@ env:
   USER_NAME: wego-admin
   PASSWORD: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
   WEAVE_GITOPS_DEV_SOPS_KEY: ${{ secrets.WEAVE_GITOPS_DEV_SOPS_KEY }}
+  CLUSTER_ADMIN_PASSWORD_HASH: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
 
 jobs:
   build_and_run_tests:
