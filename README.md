@@ -40,24 +40,29 @@ It is recommended to install latest and stable version of these tools. All tools
     ./utils/scripts/mgmt-cluster-setup.sh kind  $(pwd) playwright-mgmt-kind
     ```
    
-6. Setup core and enterprise controllers.
+6. Make sure that the cluster has been created.
+    ```bash
+    kind get clsuters
+    ```
+   
+7. Setup core and enterprise controllers.
     ```bash
     ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
     ```
    
-7. Install violating-app.
+8. Install violating-app.
     ```bash
     kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="$GITHUB_USER" --from-literal=password="$GITHUB_TOKEN"
     sed -i 's/BRANCH_NAME/<your_branch_name>/' ./utils/data/violating-podinfo-kustomization.yaml
     kubectl apply -f  ./utils/data/violating-podinfo-kustomization.yaml
     ```
    
-8. Install policies.
+9. Install policies.
     ```bash
     kubectl apply -f  ./utils/data/policies.yaml
     ```
 
-9. Flux reconcile violating app<p>&nbsp;</p>
+10. Flux reconcile violating app<p>&nbsp;</p>
     ```bash
     flux reconcile kustomization violating-podinfo -n default --with-source || true
     kubectl get pods -A
