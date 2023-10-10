@@ -42,7 +42,7 @@ It is recommended to install latest and stable version of these tools. All tools
    
 6. Make sure that the cluster has been created.
     ```bash
-    kind get clsuters
+    kind get clusters
     ```
    
 7. Setup core and enterprise controllers.
