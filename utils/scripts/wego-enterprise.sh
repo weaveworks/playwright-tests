@@ -73,16 +73,16 @@ function setup {
   # Create admin cluster user secret
   kubectl create secret generic sops-gpg \
   --namespace flux-system \
-  --from-file=sops.asc=${WEAVE_GITOPS_DEV_SOPS_KEY}
+  --from-literal=sops.asc=${WEAVE_GITOPS_DEV_SOPS_KEY}
 
   # Create admin cluster user secret
-  kubectl create secret generic cluster-user-auth \
-  --namespace flux-system \
-  --from-literal=username=wego-admin \
-  --from-literal=password=${CLUSTER_ADMIN_PASSWORD_HASH}
+#  kubectl create secret generic cluster-user-auth \
+#  --namespace flux-system \
+#  --from-literal=username=wego-admin \
+#  --from-literal=password=${CLUSTER_ADMIN_PASSWORD_HASH}
 
 
-#  kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
+  kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
 
 #  kubectl apply -f ${args[1]}/resources/entitlement-secret.yaml
 
