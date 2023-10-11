@@ -81,11 +81,14 @@ function setup {
 #  --from-literal=username=wego-admin \
 #  --from-literal=password=${CLUSTER_ADMIN_PASSWORD_HASH}
 
-
   kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
 
-  kubectl apply -f ${args[1]}/resources/shared-secrets-kustomization.yaml
+  kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="weave-gitops-bot" --from-literal=password="${{ secrets.WEAVEWORKS_BOT_TOKEN }}"
+  sed -i 's/BRANCH_NAME/${{ steps.extract_branch.outputs.branch_name }}/' ${args[1]}/resources/flux-system-gitrepo.yaml
+  kubectl apply -f ${args[1]}/resources/flux-system-gitrepo.yaml
+  flux reconcile source git -n flux-system flux-system --verbose
 
+  kubectl apply -f ${args[1]}/resources/shared-secrets-kustomization.yaml
   flux reconcile kustomization -n flux-system shared-secrets --verbose
 
   # Choosing weave-gitops-enterprise chart version to install
