@@ -84,7 +84,9 @@ function setup {
 
   kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
 
-#  kubectl apply -f ${args[1]}/resources/entitlement-secret.yaml
+  kubectl apply -f ${args[1]}/resources/shared-secrets-kustomization.yaml
+
+  flux reconcile kustomization -n flux-system shared-secrets --verbose
 
   # Choosing weave-gitops-enterprise chart version to install
   if [ -z ${ENTERPRISE_CHART_VERSION} ]; then
