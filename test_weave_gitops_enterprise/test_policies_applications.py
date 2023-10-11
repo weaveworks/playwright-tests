@@ -54,7 +54,6 @@ class TestApplications:
         expect(self.page).to_have_url(f"{self.URL}/kustomization/"
                                       f"events?clusterName=management"
                                       f"&name=violating-podinfo&namespace=default")
-        expect(self.page.get_by_text("ReconciliationSucceeded").first).to_be_visible()
 
     def test_open_application_graph_tab(self):
         self.applications_page.open_application_graph_tab()

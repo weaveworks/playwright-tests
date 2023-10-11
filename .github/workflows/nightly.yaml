@@ -1,4 +1,4 @@
-name: nightly
+name: Playwright Tests
 
 on:
   push:
@@ -6,11 +6,13 @@ on:
   schedule:
     - cron: "30 22 * * *"
 env:
-  AWS_REGION: "eu-north-1"
+  MANAGEMENT_CLUSTER_TYPE: "kind"
   CLUSTER_NAME: run-playwright-tests-${{ github.run_id }}
   USER_NAME: wego-admin
   PASSWORD: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
-
+  WEAVE_GITOPS_DEV_SOPS_KEY: ${{ secrets.WEAVE_GITOPS_DEV_SOPS_KEY }}
+  CLUSTER_ADMIN_PASSWORD_HASH: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
+  WEAVEWORKS_BOT_TOKEN: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
 
 jobs:
   build_and_run_tests:
@@ -25,7 +27,7 @@ jobs:
     - uses: actions/checkout@v3
     - name : Set URL environment Variable
       run: |
-        echo "URL=https://${{ env.CLUSTER_NAME }}.eng-sandbox.weave.works" >> $GITHUB_ENV
+        echo "URL=http://localhost:8000" >> $GITHUB_ENV
 
     - name: Check if the URL variable is available
       run: |
@@ -41,25 +43,6 @@ jobs:
         pip install flake8 pytest
         pip install pytest_dotenv
         pip install pytest-reporter-html1
-
-    - name: Install eksctl
-      run: |
-        ARCH=amd64
-        PLATFORM=$(uname -s)_$ARCH
-        curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
-
-        curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
-        tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
-
-        sudo mv /tmp/eksctl /usr/local/bin
-        eksctl version
-
-    - name: Install aws cli
-      run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-        aws --version
 
     - name: Install pre-commit
       run: |
@@ -77,6 +60,14 @@ jobs:
         sudo mv ./kubectl /usr/local/bin/kubectl
         kubectl version --client
 
+    - name: Install kind
+      run: |
+        curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+        chmod +x ./kind
+        sudo mv ./kind /usr/local/bin/kind
+        which kind
+        kind version
+
     - name: Install playwright
       run: |
         pip install pytest-playwright
@@ -92,65 +83,36 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        role-to-assume: arn:aws:iam::894516026745:role/WeaveEksGithubActions
-        aws-region: ${{ env.AWS_REGION }}
-
-    - name: Clone cluster-config repository
-      uses: actions/checkout@v2
-      with:
-        repository: weaveworks/clusters-config
-        ref: main
-        path: cluster-config
-        token: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
-
-
-    - name: Create test cluster
+    - name: Setup management cluster
       run: |
-        cd cluster-config
-        git config user.name github-actions
-        git config user.email github-actions@github.com
-        make request-cluster ARGS="--team timberwolf --cluster-name ${{ env.CLUSTER_NAME }} --weave-mode enterprise --enable-policies --weave-branch main"
-        mkdir -p eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps
-        cp ../utils/data/violating-app-manifest.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-apps/
-        cp ../utils/data/violating-podinfo-kustomization.yaml eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/
-        sed -i 's/CLUSTER_NAME/${{ env.CLUSTER_NAME }}/' eksctl-clusters/clusters/${{ env.CLUSTER_NAME }}/violating-podinfo-kustomization.yaml
-        git add .
-        git commit -m "Add init files"
-        git push --set-upstream origin cluster-${{ env.CLUSTER_NAME }}
+        ./utils/scripts/mgmt-cluster-setup.sh ${{ env.MANAGEMENT_CLUSTER_TYPE }} $(pwd) ${{ env.CLUSTER_NAME }}
 
-    - name: Wait 30 minutes for cluster provisioning
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '30m'
-
-    - name: Get cluster kubeconfig file
+    - name: Extract branch name
       run: |
-        cd cluster-config
-        echo "Cluster: ${{ env.CLUSTER_NAME }}"
-        eksctl utils write-kubeconfig --region ${{ env.AWS_REGION }} --cluster ${{ env.CLUSTER_NAME }} --kubeconfig=$HOME/.kube/config
-        kubectl get nodes
+        echo "branch_name=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+
+    - name: Setup wego enterprise
+      run: |
+        kubectl create namespace flux-system
+        flux install
+        kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="weave-gitops-bot" --from-literal=password="${WEAVEWORKS_BOT_TOKEN}"
+        sed -i 's/BRANCH_NAME/${{ steps.extract_branch.outputs.branch_name }}/' ./utils/scripts/resources/flux-system-gitrepo.yaml
+        ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
+
+    - name: Install violating-app
+      run: |
+        kubectl apply -f  ./utils/data/violating-podinfo-kustomization.yaml
+        flux reconcile kustomization -n default violating-podinfo --verbose
 
     - name: Install policies
       run: |
-        cd cluster-config
-        git pull
-        cp ../utils/data/policies.yaml eksctl-clusters/policies/
-        git add .
-        git commit -m "Add policies"
-        git push
+        kubectl apply -f  ./utils/data/policies.yaml 
 
-    - name: Wait 2 minute for policies showing up
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '2m'
-
-    - name: Flux reconcile
+    - name: Flux reconcile violating app
       run: |
-        cd cluster-config
-        flux reconcile kustomization violating-podinfo -n default || true
+        flux reconcile kustomization violating-podinfo -n default --with-source || true
+        kubectl get pods -A
 
     - name: run tests
       if: success()
@@ -219,12 +181,7 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-    - name: Delete cluster's branch
+    - name : Delete test cluster
       if: success() || failure()
       run: |
-        cd cluster-config
-        git config --global user.email github-actions@github.com
-        git config --global user.name github-actions
-        export BRANCH_NAME=cluster-${{ env.CLUSTER_NAME }}
-        echo "Deleting cluster ${{ env.CLUSTER_NAME }} by deleting its branch ${BRANCH_NAME}!"
-        git push origin --delete ${BRANCH_NAME}
+        kind delete clusters --all
