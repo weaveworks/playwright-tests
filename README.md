@@ -47,13 +47,15 @@ It is recommended to install latest and stable version of these tools. All tools
    
 7. Setup core and enterprise controllers.
     ```bash
+    kubectl create namespace flux-system
+    flux install
+    kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="$GITHUB_USER" --from-literal=password="$GITHUB_TOKEN"
+    sed -i 's/BRANCH_NAME/${{ steps.extract_branch.outputs.branch_name }}/' ./utils/scripts/resources/flux-system-gitrepo.yaml
     ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
     ```
    
 8. Install violating-app.
     ```bash
-    kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="$GITHUB_USER" --from-literal=password="$GITHUB_TOKEN"
-    sed -i 's/BRANCH_NAME/<your_branch_name>/' ./utils/data/violating-podinfo-kustomization.yaml
     kubectl apply -f  ./utils/data/violating-podinfo-kustomization.yaml
     ```
    
@@ -62,7 +64,7 @@ It is recommended to install latest and stable version of these tools. All tools
     kubectl apply -f  ./utils/data/policies.yaml
     ```
 
-10. Flux reconcile violating app<p>&nbsp;</p>
+10. Flux reconcile violating app.
     ```bash
     flux reconcile kustomization violating-podinfo -n default --with-source || true
     kubectl get pods -A

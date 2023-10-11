@@ -103,7 +103,6 @@ jobs:
     - name: Install violating-app
       run: |
         kubectl apply -f  ./utils/data/violating-podinfo-kustomization.yaml
-        flux reconcile kustomization -n default violating-podinfo --verbose
 
     - name: Install policies
       run: |
