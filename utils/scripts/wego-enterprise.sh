@@ -83,8 +83,6 @@ function setup {
 
   kubectl apply -f ${args[1]}/resources/cluster-user-auth.yaml
 
-  kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="weave-gitops-bot" --from-literal=password="${WEAVEWORKS_BOT_TOKEN}"
-  sed -i 's/BRANCH_NAME/${{ steps.extract_branch.outputs.branch_name }}/' ${args[1]}/resources/flux-system-gitrepo.yaml
   kubectl apply -f ${args[1]}/resources/flux-system-gitrepo.yaml
   flux reconcile source git -n flux-system flux-system --verbose
 

@@ -89,6 +89,8 @@ jobs:
 
     - name: Setup wego enterprise
       run: |
+        kubectl create secret generic git-provider-credentials -n flux-system --from-literal=username="weave-gitops-bot" --from-literal=password="${WEAVEWORKS_BOT_TOKEN}"
+        sed -i 's/BRANCH_NAME/${{ steps.extract_branch.outputs.branch_name }}/' ./utils/scripts/resources/flux-system-gitrepo.yaml
         ./utils/scripts/wego-enterprise.sh setup ./utils/scripts
 
     - name: Extract branch name
