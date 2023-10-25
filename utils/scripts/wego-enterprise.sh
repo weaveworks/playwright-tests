@@ -64,6 +64,7 @@ function setup {
     --set installCRDs=true
   kubectl wait --for=condition=Ready --timeout=120s -n cert-manager --all pod
 
+  kubectl create namespace flux-system
 
   # Create admin cluster user secret
   kubectl create secret generic sops-gpg \
