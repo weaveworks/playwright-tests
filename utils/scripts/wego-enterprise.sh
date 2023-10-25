@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ENTERPRISE_CHART_VERSION=0.31.0-9-gdae6755
+ENTERPRISE_CHART_VERSION="${CHART_VERSION}"
 
 args=("$@")
 

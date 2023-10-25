@@ -26,6 +26,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Set CHART_VERSION
+      run: echo "CHART_VERSION=$(git describe --always --abbrev=7 | sed 's/^[^0-9]*//')" >> $GITHUB_ENV
+
+    - name: Test CHART_VERSION is set
+      run: echo $CHART_VERSION
+
     - name : Set URL environment Variable
       run: |
         echo "URL=http://localhost:8000" >> $GITHUB_ENV
