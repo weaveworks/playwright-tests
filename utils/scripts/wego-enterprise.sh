@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-ENTERPRISE_CHART_VERSION="${CHART_VERSION}"
 
 args=("$@")
 
