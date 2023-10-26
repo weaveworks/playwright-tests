@@ -20,6 +20,7 @@ env:
   WEAVE_GITOPS_DEV_SOPS_KEY: ${{ secrets.WEAVE_GITOPS_DEV_SOPS_KEY }}
   CLUSTER_ADMIN_PASSWORD_HASH: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
   WEAVEWORKS_BOT_TOKEN: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
+  ENTERPRISE_CHART_VERSION:  ${{ inputs.chart_version }}
 
 jobs:
   build_and_run_tests:
