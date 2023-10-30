@@ -87,7 +87,7 @@ function setup {
 
   # Choosing weave-gitops-enterprise chart version to install
   if [ -z ${ENTERPRISE_CHART_VERSION} ]; then
-    CHART_VERSION=$(git describe --always --abbrev=7 | sed 's/^[^0-9]*//')
+    CHART_VERSION=${DEFAULT_ENTERPRISE_CHART_VERSION}
   else
     CHART_VERSION=${ENTERPRISE_CHART_VERSION}
   fi

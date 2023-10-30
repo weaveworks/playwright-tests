@@ -1,6 +1,8 @@
 name: Playwright Tests
 
 on:
+  push:
+    branches: "**"
   workflow_dispatch:
     inputs:
       chart_version:
@@ -17,6 +19,7 @@ env:
   CLUSTER_ADMIN_PASSWORD_HASH: ${{ secrets.CLUSTERS_CONFIG_PASSWORD }}
   WEAVEWORKS_BOT_TOKEN: ${{ secrets.WEAVEWORKS_BOT_TOKEN }}
   ENTERPRISE_CHART_VERSION:  ${{ inputs.chart_version }}
+  DEFAULT_ENTERPRISE_CHART_VERSION: "0.31.0-9-gdae6755"
 
 jobs:
   build_and_run_tests:
