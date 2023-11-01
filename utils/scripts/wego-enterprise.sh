@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-ENTERPRISE_CHART_VERSION=0.31.0-9-gdae6755
 
 args=("$@")
 
@@ -65,7 +64,6 @@ function setup {
     --set installCRDs=true
   kubectl wait --for=condition=Ready --timeout=120s -n cert-manager --all pod
 
-
   # Create admin cluster user secret
   kubectl create secret generic sops-gpg \
   --namespace flux-system \
@@ -87,9 +85,9 @@ function setup {
 
   # Choosing weave-gitops-enterprise chart version to install
   if [ -z ${ENTERPRISE_CHART_VERSION} ]; then
-    CHART_VERSION=$(git describe --always --abbrev=7 | sed 's/^[^0-9]*//')
-  else
     CHART_VERSION=${ENTERPRISE_CHART_VERSION}
+  else
+    CHART_VERSION=${DEFAULT_ENTERPRISE_CHART_VERSION}
   fi
 
   # Install weave gitops enterprise controllers
