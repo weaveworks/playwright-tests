@@ -79,6 +79,7 @@ jobs:
 
     - name: Install playwright
       run: |
+        npm install -D @playwright/test
         pip install pytest-playwright
 
     - name: Install chromium
