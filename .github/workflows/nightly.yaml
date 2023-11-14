@@ -79,7 +79,6 @@ jobs:
 
     - name: Install playwright
       run: |
-        npm install -D @playwright/test
         pip install pytest-playwright
 
     - name: Install chromium
@@ -126,7 +125,7 @@ jobs:
     - name: run tests
       if: success()
       run: |
-        npx playwright test --reporter=line
+        pytest -s -v --video=retain-on-failure --screenshot=only-on-failure --template=html1/index.html --report=test-results/report.html -o junit_family=xunit2 --junitxml=test-results/junit_tests_report.xml
 
     - name: Upload test report
       uses: actions/upload-artifact@v3
