@@ -139,7 +139,7 @@ jobs:
       uses: actions/download-artifact@v3.0.1
       if: success() || failure()
       with:
-        name: test-report
+        name: playwright-tests-report
         path: test-results
 
     - name: Display structure of downloaded files
