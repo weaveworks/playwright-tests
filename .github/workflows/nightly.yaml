@@ -125,7 +125,16 @@ jobs:
     - name: run tests
       if: success()
       run: |
-        pytest -s -v --video=retain-on-failure --screenshot=only-on-failure --template=html1/index.html --report=test-results/report.html -o junit_family=xunit2 --junitxml=test-results/junit_tests_report.xml
+        pytest -s -v --video=retain-on-failure --screenshot=only-on-failure --template=html1/index.html --report=test-results/report.html -o junit_family=xunit2 --junit-xml=test-results/junit_test_report.xml
+
+    - name: Failed tests report
+      if: always()
+      uses: pmeier/pytest-results-action@main
+      with:
+        path: test-results/junit_test_report.xml
+        summary: true
+        display-options: fEX
+        fail-on-empty: true
 
     - name: Upload test report
       uses: actions/upload-artifact@v3
@@ -152,7 +161,7 @@ jobs:
       uses: mikepenz/action-junit-report@v3.7.6
       if: success() || failure()
       with:
-        report_paths: test-results/junit_tests_report.xml
+        report_paths: test-results/junit_test_report.xml
 
     - name: Notify Slack
       id: slack
