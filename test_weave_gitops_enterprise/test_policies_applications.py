@@ -47,7 +47,7 @@ class TestApplications:
 
     def test_open_application_more_info(self):
         self.applications_page.open_application_more_info()
-        expect(self.page.get_by_text("GitRepository/flux-system")).to_be_visible()
+        expect(self.page.get_by_text("GitRepository/flux-syst")).to_be_visible()
 
     def test_open_application_events_tab(self):
         self.applications_page.open_application_events_tab()
