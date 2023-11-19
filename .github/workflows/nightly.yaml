@@ -139,9 +139,10 @@ jobs:
     - name: Show another report
       uses: dariocurr/pytest-summary@main
       with:
-        paths: test_weave_gitops_enterprise/**
+        paths: test_weave_gitops_enterprise/**.py
         options: --quiet
         show: all
+        output: test-summary.md
 
     - name: Upload test report
       uses: actions/upload-artifact@v3
