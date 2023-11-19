@@ -136,28 +136,6 @@ jobs:
         display-options: fEX
         fail-on-empty: true
 
-#    - name: Show another report
-#      uses: dariocurr/pytest-summary@main
-#      with:
-#        paths: /test_weave_gitops_enterprise/**.py
-#        options: -vv -s
-#        show: all
-#        output: test-results/test-summary.md
-
-    - name: Test Summary
-      id: run-report
-      uses: test-summary/action@v2
-      with:
-        paths: "test-results/junit_test_report.xml"
-        show: all
-        output: test-results/test-summary.md
-      if: always()
-
-    - name: Display test summary result
-      run: |
-        echo "steps.run-report.outputs" >> $GITHUB_STEP_SUMMARY
-
-
     - name: Upload test report
       uses: actions/upload-artifact@v3
       if: success() || failure()
