@@ -81,3 +81,8 @@ It is recommended to install latest and stable version of these tools. All tools
 `export PYTHONPATH=./`
 
 `pytest -s -v --template=html1/index.html --report=test-results/report.html`
+
+## Check the test run report
+Just open the **workflow Summary** page and you will see :
+1. a section called **Tests** which contains a table has **Total** number of run tests, many tests with status **Passed**, how many tests with status **Failed** and how many **Skipped** tests.
+2. In case there are **Failed** tests you will see in the **failed** section the names of the failed tests with detailed error messages for each test.
