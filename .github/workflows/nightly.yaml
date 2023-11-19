@@ -148,8 +148,12 @@ jobs:
       uses: test-summary/action@v2
       with:
         paths: "test-results/junit_test_report.xml"
+        show: all
         output: test-results/test-summary.md
       if: always()
+      run: |
+        echo "test-results/test-summary.md" >> $GITHUB_STEP_SUMMARY
+
 
     - name: Upload test report
       uses: actions/upload-artifact@v3
