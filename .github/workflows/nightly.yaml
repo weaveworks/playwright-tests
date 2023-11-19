@@ -145,14 +145,17 @@ jobs:
 #        output: test-results/test-summary.md
 
     - name: Test Summary
+      id: run-report
       uses: test-summary/action@v2
       with:
         paths: "test-results/junit_test_report.xml"
         show: all
         output: test-results/test-summary.md
       if: always()
+
+    - name: Display test summary result
       run: |
-        echo "test-results/test-summary.md" >> $GITHUB_STEP_SUMMARY
+        echo "steps.run-report.outputs" >> $GITHUB_STEP_SUMMARY
 
 
     - name: Upload test report
