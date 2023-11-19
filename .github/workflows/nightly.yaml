@@ -139,10 +139,10 @@ jobs:
     - name: Show another report
       uses: dariocurr/pytest-summary@main
       with:
-        paths: test_weave_gitops_enterprise/**.py
-        options: --quiet
+        paths: /test_weave_gitops_enterprise/**.py
+        options: -vv -s
         show: all
-        output: test-summary.md
+        output: test-results/test-summary.md
 
     - name: Upload test report
       uses: actions/upload-artifact@v3
@@ -157,7 +157,7 @@ jobs:
       if: success() || failure()
       with:
         name: playwright-tests-report
-        path: test-results
+        path: test-results/
 
     - name: Display structure of downloaded files
       if: always()
