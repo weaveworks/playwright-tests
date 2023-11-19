@@ -136,6 +136,13 @@ jobs:
         display-options: fEX
         fail-on-empty: true
 
+    - name: Show another report
+      uses: dariocurr/pytest-summary@main
+      with:
+        paths: test_weave_gitops_enterprise/**
+        options: --quiet
+        show: all
+
     - name: Upload test report
       uses: actions/upload-artifact@v3
       if: success() || failure()
