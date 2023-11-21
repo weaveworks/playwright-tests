@@ -86,3 +86,14 @@ It is recommended to install latest and stable version of these tools. All tools
 After running the tests using GitHub Actions, just open the **workflow Summary** page and you will see :
 1. a section called **Tests** which contains a table has **Total** number of run tests, many tests with status **Passed**, how many tests with status **Failed** and how many **Skipped** tests.
 2. In case there are **Failed** tests you will see in the **failed** section the names of the failed tests with detailed error messages for each test.
+
+## Test Artifacts 
+It is just a compressed folder produced during runtime,all you need just to download it to your machine and extract it then you will find that it contains **3** reports :
+1. **test-run-report.html** which is an HTML report displays a graph for **Total** number of running test cases, how many **Passed** tests and how many **Failed** in addition to a List of the **executed tests** by **name** and the **status** for each one. **To open it just double-click**.
+
+![screencapture-file-home-taghreed-Desktop-report-html-2023-11-21-16_45_44](https://github.com/weaveworks/playwright-tests/assets/44777049/7d882812-c7c3-4390-9df9-a6ea74943a37)
+2. **junit_test_report.xml** which is an XML report displays a List of the **executed tests** by **name** and the **status** for each one in addition to the **Failure errors** for the **Failed** tests. **To open it just double-click**.
+3. **execution-tracing.zip** which is a compressed folder contains **recorded Playwright traces** after the tests have been run. Traces are a great way for **debugging your tests when they fail on CI**. You can **open traces locally or in your browser on** [trace.playwright.dev](https://trace.playwright.dev/).
+
+**For more information about Playwright Trace Viewer check this URL (https://playwright.dev/docs/trace-viewer)**
+ 

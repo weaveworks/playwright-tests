@@ -125,7 +125,7 @@ jobs:
     - name: run tests
       if: success()
       run: |
-        pytest -s -v --video=retain-on-failure --screenshot=only-on-failure --template=html1/index.html --report=test-results/report.html -o junit_family=xunit2 --junit-xml=test-results/junit_test_report.xml
+        pytest -s -v --video=retain-on-failure --screenshot=only-on-failure --template=html1/index.html --report=test-results/test-run-report.html -o junit_family=xunit2 --junit-xml=test-results/junit_test_report.xml
 
     - name: Failed tests report
       if: always()
