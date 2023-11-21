@@ -88,7 +88,7 @@ After running the tests using GitHub Actions, just open the **workflow Summary**
 2. In case there are **Failed** tests you will see in the **failed** section the names of the failed tests with detailed error messages for each test.
 
 ## Test Artifacts 
-It is just a compressed folder produced during runtime,all you need just to download it to your machine and extract it then you will find that it contains **3** reports :
+It is just a compressed folder produced during runtime,all you need just open the **workflow Summary** page and download it to your machine and extract it then you will find that it contains **3** reports :
 1. **test-run-report.html** which is an HTML report displays a graph for **Total** number of running test cases, how many **Passed** tests and how many **Failed** in addition to a List of the **executed tests** by **name** and the **status** for each one. **To open it just double-click**.This is how it looks like :point_down:
 
 ![screencapture-file-home-taghreed-Desktop-report-html-2023-11-21-16_45_44](https://github.com/weaveworks/playwright-tests/assets/44777049/7d882812-c7c3-4390-9df9-a6ea74943a37)
