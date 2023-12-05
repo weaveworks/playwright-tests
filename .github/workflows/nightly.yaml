@@ -122,12 +122,17 @@ jobs:
         flux reconcile kustomization violating-podinfo -n default --with-source || true
         kubectl get pods -A
 
+    - name: Wait 3 minutes for the App reconciliation
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '3m'
+
     - name: run tests
       if: success()
       run: |
         pytest -s -v --video=retain-on-failure --screenshot=only-on-failure --template=html1/index.html --report=test-results/test-run-report.html -o junit_family=xunit2 --junit-xml=test-results/junit_test_report.xml
 
-    - name: Failed tests report
+    - name: Generate tests report
       if: always()
       uses: pmeier/pytest-results-action@main
       with:
