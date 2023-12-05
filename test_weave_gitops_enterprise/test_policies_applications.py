@@ -40,6 +40,7 @@ class TestApplications:
         expect(self.page).to_have_url(f"{self.URL}/applications")
 
     def test_open_application_details_page(self):
+        self.page.reload()
         self.applications_page.open_application_details_page()
         expect(self.page).to_have_url(f"{self.URL}/kustomization/"
                                       f"details?clusterName=management"
