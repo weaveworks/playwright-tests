@@ -122,10 +122,10 @@ jobs:
         flux reconcile kustomization violating-podinfo -n default --with-source || true
         kubectl get pods -A
 
-    - name: Wait 5 minutes for App reconciliation
+    - name: Wait 3 minutes for the App reconciliation
       uses: jakejarvis/wait-action@master
       with:
-        time: '5m'
+        time: '3m'
 
     - name: run tests
       if: success()
