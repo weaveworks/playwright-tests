@@ -16,5 +16,5 @@ class TestExplorer:
     def test_search(self):
         self.explorer_page.open()
         expect(self.page).to_have_url(f"{self.URL}/explorer/query")
-        self.explorer_page.search("weave-gitops-enterprise")
-        expect(self.page.locator("tbody")).to_contain_text("weave-gitops-enterprise")
+        self.explorer_page.search("flux-system")
+        expect(self.page.locator("tbody")).to_contain_text("flux-system")
