@@ -11,4 +11,5 @@ setup:
 	bash -x  ./utils/scripts/mgmt-cluster-setup.sh kind  $(CURRENT_DIR) playwright-mgmt-kind
 
 test:
+	URL="http://localhost:8000" USER_NAME="wego-admin" PASSWORD="admin123" \
 	pytest test_weave_gitops_enterprise/explorer

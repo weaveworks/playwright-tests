@@ -1,17 +1,20 @@
 import os
 
 from playwright.sync_api import Playwright, sync_playwright, expect
+from pages.explorer_page import Explorer
 import pytest
-
 
 @pytest.mark.usefixtures("login")
 class TestExplorer:
 
     @pytest.fixture(autouse=True)
     def _obj(self, login):
-        self.page = login
         self.URL = os.getenv("URL")
+        self.page = login
+        self.explorer_page = Explorer(self.page, self.URL)
 
-    def test_open_explorer_page(self):
-        self.policies_page.open_policies_page()
-        expect(self.page).to_have_url(f"{self.URL}/policies/list")
+    def test_search(self):
+        self.explorer_page.open()
+        expect(self.page).to_have_url(f"{self.URL}/explorer/query")
+        self.explorer_page.search("weave-gitops-enterprise")
+        expect(self.page.locator("tbody")).to_contain_text("weave-gitops-enterprise")
