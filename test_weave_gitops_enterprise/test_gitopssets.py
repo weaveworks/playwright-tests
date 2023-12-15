@@ -22,7 +22,9 @@ class TestGitopsSets:
                                       f"clusterName=management"
                                       f"&name=gitopsset-configmaps"
                                       f"&namespace=default")
-        expect(self.page.get_by_role("table")).not_to_be_empty()
+        expect(self.page.locator("tbody")).to_contain_text("dev-info-configmap")
+        expect(self.page.locator("tbody")).to_contain_text("staging-info-configmap")
+        expect(self.page.locator("tbody")).to_contain_text("production-info-configmap")
 
     def test_open_first_configmap_yaml(self):
         self.gitopssets_page.open_first_configmap_yaml()
@@ -41,7 +43,7 @@ class TestGitopsSets:
 
     def test_open_gitopssets_events_tab(self):
         self.gitopssets_page.open_gitopssets_events_tab()
-        expect(self.page).to_have_url(f"{self.URL}/object/events?"
+        expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/events?"
                                       f"clusterName=management"
                                       f"&name=gitopsset-configmaps"
                                       f"&namespace=default")
@@ -64,4 +66,4 @@ class TestGitopsSets:
     def test_back_to_gitopssets_list(self):
         self.gitopssets_page.back_to_gitopssets_list()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets")
-        expect(self.page.get_by_role("table")).not_to_be_empty()
+        expect(self.page.locator("tbody")).to_contain_text("gitopsset-configmaps")
