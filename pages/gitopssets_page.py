@@ -17,13 +17,13 @@ class GitopsSets:
     def open_third_configmap_yaml(self):
         self.page.get_by_text("production-info-configmap").click()
 
-    def open_application_events_tab(self):
+    def open_gitopssets_events_tab(self):
         self.page.get_by_role("tab", name="Events").click()
 
-    def open_application_graph_tab(self):
+    def open_gitopssets_graph_tab(self):
         self.page.get_by_role("tab", name="Graph").click()
 
-    def open_application_yaml_tab(self):
+    def open_gitopssets_yaml_tab(self):
         self.page.get_by_role("tab", name="Yaml").click()
 
     def back_to_gitopssets_list(self):
