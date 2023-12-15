@@ -117,12 +117,16 @@ jobs:
       run: |
         kubectl apply -f  ./utils/data/policies.yaml 
 
+    - name: Install gitopsset-configmaps
+      run: |
+        kubectl apply -f  ./utils/data/gitops-sets-kustomization.yaml
+
     - name: Flux reconcile violating app
       run: |
         flux reconcile kustomization violating-podinfo -n default --with-source || true
         kubectl get pods -A
 
-    - name: Wait 3 minutes for the App reconciliation
+    - name: Wait 3 minutes for reconciliation
       uses: jakejarvis/wait-action@master
       with:
         time: '3m'
