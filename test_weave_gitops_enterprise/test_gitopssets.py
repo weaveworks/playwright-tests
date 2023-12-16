@@ -22,8 +22,8 @@ class TestGitopsSets:
                                       f"clusterName=management"
                                       f"&name=gitopsset-configmaps"
                                       f"&namespace=default")
-        expect(self.page.locator(".MuiTableContainer-root")).to_contain_text("dev-info-configmap")
-        expect(self.page.locator(".MuiTableContainer-root")).to_contain_text("staging-info-configmap")
+        expect(self.page.get_by_label("simple table").locator("tbody")).to_contain_text("dev-info-configmap")
+        expect(self.page.get_by_label("simple table").locator("tbody")).to_contain_text("staging-info-configmap")
         expect(self.page.get_by_label("simple table").locator("tbody")).to_contain_text("production-info-configmap")
 
     def test_open_dev_info_configmap_details(self):
