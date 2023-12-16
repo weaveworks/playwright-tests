@@ -17,6 +17,7 @@ class TestGitopsSets:
         expect(self.page).to_have_url(f"{self.URL}/gitopssets")
 
     def test_open_gitopssets_details_page(self):
+        self.page.get_by_test_id("sync-button").click()
         self.gitopssets_page.open_gitopssets_details_page()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/details?"
                                       f"clusterName=management"
