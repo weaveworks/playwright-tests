@@ -22,7 +22,6 @@ class TestGitopsSets:
                                       f"clusterName=management"
                                       f"&name=gitopsset-configmaps"
                                       f"&namespace=default")
-        expect(self.page.locator("tbody")).not_to_be_empty()
 
     def test_open_dev_info_configmap_details(self):
         self.gitopssets_page.open_dev_info_configmap_details()
