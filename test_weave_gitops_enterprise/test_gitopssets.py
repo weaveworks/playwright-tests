@@ -17,14 +17,17 @@ class TestGitopsSets:
         expect(self.page).to_have_url(f"{self.URL}/gitopssets")
 
     def test_open_gitopssets_details_page(self):
-        self.page.get_by_test_id("sync-button").click()
         self.gitopssets_page.open_gitopssets_details_page()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/details?"
                                       f"clusterName=management"
                                       f"&name=gitopsset-configmaps"
                                       f"&namespace=default")
-        expect(self.page.locator("xpath=//div[contains(@class,'MuiTableContainer-root')]")
-               ).to_contain_text("dev-info-configmap")
+
+    def test_sync_button(self):
+        self.gitopssets_page.press_sync_button()
+        expect(self.page.get_by_text("Sync successful")).to_be_visible()
+        expect(self.page.get_by_text("3 resources created")).to_be_visible()
+        expect(self.page.locator("//table")).to_contain_text("dev-info-configmap")
 
     def test_open_dev_info_configmap_details(self):
         self.gitopssets_page.open_dev_info_configmap_details()
