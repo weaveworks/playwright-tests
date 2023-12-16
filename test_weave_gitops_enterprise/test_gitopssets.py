@@ -22,23 +22,26 @@ class TestGitopsSets:
                                       f"clusterName=management"
                                       f"&name=gitopsset-configmaps"
                                       f"&namespace=default")
-        expect(self.page.locator("tbody")).to_contain_text("dev-info-configmap")
-        expect(self.page.locator("tbody")).to_contain_text("staging-info-configmap")
-        expect(self.page.locator("tbody")).to_contain_text("production-info-configmap")
+        expect(self.page.locator(".MuiTableContainer-root")).to_contain_text("dev-info-configmap")
+        expect(self.page.locator(".MuiTableContainer-root")).to_contain_text("staging-info-configmap")
+        expect(self.page.get_by_label("simple table").locator("tbody")).to_contain_text("production-info-configmap")
 
-    def test_open_first_configmap_yaml(self):
-        self.gitopssets_page.open_first_configmap_yaml()
-        expect(self.page.get_by_text("kubectl get configmap dev-info-configmap -n default -o yaml")).to_be_visible()
+    def test_open_dev_info_configmap_details(self):
+        self.gitopssets_page.open_dev_info_configmap_details()
+        (expect(self.page.locator("xpath=//div[.='kubectl get configmap dev-info-configmap -n default -o yaml']")
+                ).to_be_visible())
         self.page.get_by_role("button").click()
 
-    def test_open_second_configmap_yaml(self):
-        self.gitopssets_page.open_second_configmap_yaml()
-        expect(self.page.get_by_text("kubectl get configmap staging-info-configmap -n default -o yaml")).to_be_visible()
+    def test_open_staging_info_configmap_details(self):
+        self.gitopssets_page.open_staging_info_configmap_details()
+        (expect(self.page.locator("xpath=//div[.='kubectl get configmap staging-info-configmap -n default -o yaml']")
+                ).to_be_visible())
         self.page.get_by_role("button").click()
 
-    def test_open_third_configmap_yaml(self):
-        self.gitopssets_page.open_third_configmap_yaml()
-        expect(self.page.get_by_text("kubectl get configmap production-info-configmap -n default -o yaml")).to_be_visible()
+    def test_open_production_info_configmap_details(self):
+        self.gitopssets_page.open_production_info_configmap_details()
+        (expect(self.page.locator("xpath=//div[.='kubectl get configmap production-info-configmap -n default -o yaml']")
+                ).to_be_visible())
         self.page.get_by_role("button").click()
 
     def test_open_gitopssets_events_tab(self):
