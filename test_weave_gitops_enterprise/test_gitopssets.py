@@ -24,8 +24,9 @@ class TestGitopsSets:
                                       f"&namespace=default")
 
     def test_sync_button(self):
+        self.page.reload()
         self.gitopssets_page.press_sync_button()
-        expect(self.page.get_by_text("Sync successful")).to_be_visible()
+        expect(self.page.get_by_role("alert")).to_contain_text("Sync successful")
         expect(self.page.get_by_text("3 resources created")).to_be_visible()
         expect(self.page.locator("//table")).to_contain_text("dev-info-configmap")
 
