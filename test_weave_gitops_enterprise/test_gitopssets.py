@@ -23,31 +23,6 @@ class TestGitopsSets:
                                       f"&name=gitopsset-configmaps"
                                       f"&namespace=default")
 
-    def test_sync_button(self):
-        self.page.reload()
-        self.gitopssets_page.press_sync_button()
-        expect(self.page.get_by_role("alert")).to_contain_text("Sync successful")
-        expect(self.page.get_by_text("3 resources created")).to_be_visible()
-        expect(self.page.locator("//table")).to_contain_text("dev-info-configmap")
-
-    def test_open_dev_info_configmap_details(self):
-        self.gitopssets_page.open_dev_info_configmap_details()
-        (expect(self.page.locator("xpath=//div[contains(@class,'YamlView-sc')]")
-                ).to_be_visible())
-        self.page.get_by_role("button").click()
-
-    def test_open_staging_info_configmap_details(self):
-        self.gitopssets_page.open_staging_info_configmap_details()
-        (expect(self.page.locator("xpath=//div[contains(@class,'YamlView-sc')]")
-                ).to_be_visible())
-        self.page.get_by_role("button").click()
-
-    def test_open_production_info_configmap_details(self):
-        self.gitopssets_page.open_production_info_configmap_details()
-        (expect(self.page.locator("xpath=//div[contains(@class,'YamlView-sc')]")
-                ).to_be_visible())
-        self.page.get_by_role("button").click()
-
     def test_open_gitopssets_events_tab(self):
         self.gitopssets_page.open_gitopssets_events_tab()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/events?"

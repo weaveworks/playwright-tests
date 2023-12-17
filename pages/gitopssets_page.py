@@ -8,18 +8,6 @@ class GitopsSets:
     def open_gitopssets_details_page(self):
         self.page.get_by_role("link", name="gitopsset-configmaps").click()
 
-    def press_sync_button(self):
-        self.page.locator("xpath=//button[@data-testid='sync-button']").click()
-
-    def open_dev_info_configmap_details(self):
-        self.page.get_by_text("dev-info-configmap").click()
-
-    def open_staging_info_configmap_details(self):
-        self.page.get_by_text("staging-info-configmap").click()
-
-    def open_production_info_configmap_details(self):
-        self.page.get_by_text("production-info-configmap").click()
-
     def open_gitopssets_events_tab(self):
         self.page.get_by_role("tab", name="Events").click()
 

@@ -74,12 +74,6 @@ It is recommended to install latest and stable version of these tools. All tools
     ```bash
     kubectl apply -f  ./utils/data/gitops-sets-kustomization.yaml
     ```
-    
-12. Flux reconcile gitopsset.
-    ```bash
-    flux reconcile kustomization gitopsset-configmaps -n default --with-source || true
-    kubectl get pods -A
-    ```
    
 ## Run Tests
 
