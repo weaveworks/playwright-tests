@@ -9,7 +9,7 @@ class GitopsSets:
         self.page.get_by_role("link", name="gitopsset-configmaps").click()
 
     def press_sync_button(self):
-        self.page.get_by_test_id("sync-button").click()
+        self.page.locator("xpath=//button[@data-testid='sync-button']").click()
 
     def open_dev_info_configmap_details(self):
         self.page.get_by_text("dev-info-configmap").click()
