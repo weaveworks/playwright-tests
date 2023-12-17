@@ -28,4 +28,3 @@ spec:
             description: This is a configmap for the {{ .Element.env }} environment
             env: "{{ .Element.env }}"
             team: "{{ .Element.team }}"
-
