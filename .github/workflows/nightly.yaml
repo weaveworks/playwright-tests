@@ -126,11 +126,6 @@ jobs:
       run: |
         kubectl apply -f  ./utils/data/gitops-sets-kustomization.yaml
 
-    - name: Wait 3 minutes for reconciliation
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '3m'
-
     - name: run tests
       if: success()
       run: |
