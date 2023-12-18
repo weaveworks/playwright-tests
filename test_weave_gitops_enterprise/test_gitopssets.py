@@ -19,30 +19,30 @@ class TestGitopsSets:
     def test_open_gitopssets_details_page(self):
         self.gitopssets_page.open_gitopssets_details_page()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/details?"
-                                      f"clusterName=management"
-                                      f"&name=gitopsset-configmaps"
-                                      f"&namespace=default")
+                                      "clusterName=management"
+                                      "&name=gitopsset-configmaps"
+                                      "&namespace=default")
 
     def test_open_gitopssets_events_tab(self):
         self.gitopssets_page.open_gitopssets_events_tab()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/events?"
-                                      f"clusterName=management"
-                                      f"&name=gitopsset-configmaps"
-                                      f"&namespace=default")
+                                      "clusterName=management"
+                                      "&name=gitopsset-configmaps"
+                                      "&namespace=default")
 
     def test_open_gitopssets_graph_tab(self):
         self.gitopssets_page.open_gitopssets_graph_tab()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/graph?"
-                                      f"clusterName=management"
-                                      f"&name=gitopsset-configmaps"
-                                      f"&namespace=default")
+                                      "clusterName=management"
+                                      "&name=gitopsset-configmaps"
+                                      "&namespace=default")
 
     def test_open_gitopssets_yaml_tab(self):
         self.gitopssets_page.open_gitopssets_yaml_tab()
         expect(self.page).to_have_url(f"{self.URL}/gitopssets/object/yaml?"
-                                      f"clusterName=management"
-                                      f"&name=gitopsset-configmaps"
-                                      f"&namespace=default")
+                                      "clusterName=management"
+                                      "&name=gitopsset-configmaps"
+                                      "&namespace=default")
         expect(self.page.get_by_text("kubectl get gitopsset gitopsset-configmaps -n default -o yaml")).to_be_visible()
 
     def test_back_to_gitopssets_list(self):
