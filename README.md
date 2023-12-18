@@ -69,6 +69,11 @@ It is recommended to install latest and stable version of these tools. All tools
     flux reconcile kustomization violating-podinfo -n default --with-source || true
     kubectl get pods -A
     ```
+    
+11. Install gitopsset.
+    ```bash
+    kubectl apply -f  ./utils/data/gitops-sets-kustomization.yaml
+    ```
    
 ## Run Tests
 
