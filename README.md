@@ -1,24 +1,25 @@
 # Playwright Tests
 
-### How to run tests locally:
+## How to run tests locally
 
-This is a guide to quickly setup the environment to run and debug tests locally on a kind cluster.
+This is a guide to quickly setup the environment to run and debug tests locally on a Kind cluster.
 
 There are some prerequisites before running tests locally. It includes installing required tools and environment configurations.
 
-  ## Tools  & Utilities
+## Tools  & Utilities
 
 It is recommended to install latest and stable version of these tools. All tools must be on path.
-| Tool | Purpose | Installation |
-|--|--|--|
-| Docker | Containers runtime environment | `https://docs.docker.com/get-docker` |
-| Kind | Running local Kubernetes cluster | `https://kind.sigs.k8s.io/docs/user/quick-start#installation` |
-|Kubectl|Kubernetes command-line tool| `https://kubernetes.io/docs/tasks/tools/install-kubectl-linux` |
-| Playwright |  a framework for Web Testing and Automation | `https://playwright.dev/docs/intro#installing-playwright`|
-| flux | Command-line interface to bootstrap and interact with Flux | `https://fluxcd.io/docs/installation/#install-the-flux-cli`|
-| Playwright chromium browser | a browser binary which playwright needs to operate and run tests | After installing Playwright run `playwright install chromium`<br> you can also check this page for more info. <br> `ghttps://playwright.dev/docs/browsers`
-| Pytest | a testing framework that allows users to write test codes using Python programming language.  | `https://docs.pytest.org/en/7.1.x/getting-started.html` |
-| pytest-reporter-html1 | A basic HTML report for pytest using Jinja2 template engine.   | `https://pypi.org/project/pytest-reporter-html1/` |
+
+| Tool                        | Purpose                                                                                      | Installation                                                                                                                                               |
+|-----------------------------|----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Docker                      | Containers runtime environment                                                               | `https://docs.docker.com/get-docker`                                                                                                                       |
+| Kind                        | Running local Kubernetes cluster                                                             | `https://kind.sigs.k8s.io/docs/user/quick-start#installation`                                                                                              |
+| Kubectl                     | Kubernetes command-line tool                                                                 | `https://kubernetes.io/docs/tasks/tools/install-kubectl-linux`                                                                                             |
+| Playwright                  | a framework for Web Testing and Automation                                                   | `https://playwright.dev/docs/intro#installing-playwright`                                                                                                  |
+| flux                        | Command-line interface to bootstrap and interact with Flux                                   | `https://fluxcd.io/docs/installation/#install-the-flux-cli`                                                                                                |
+| Playwright chromium browser | a browser binary which playwright needs to operate and run tests                             | After installing Playwright run `playwright install chromium`<br> you can also check this page for more info. <br> `ghttps://playwright.dev/docs/browsers` |
+| Pytest                      | a testing framework that allows users to write test codes using Python programming language. | `https://docs.pytest.org/en/7.1.x/getting-started.html`                                                                                                    |
+| pytest-reporter-html1       | A basic HTML report for pytest using Jinja2 template engine.                                 | `https://pypi.org/project/pytest-reporter-html1/`                                                                                                          |
 
 ## Environment Setup
 1. Clone the repo<br/>
