@@ -4,6 +4,7 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 from pages.gitopssets_page import GitopsSets
 import pytest
 
+
 @pytest.mark.usefixtures("login")
 class TestGitopsSets:
     @pytest.fixture(autouse=True)

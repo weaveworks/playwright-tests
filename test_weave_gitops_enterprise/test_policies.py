@@ -21,6 +21,6 @@ class TestPolicies:
     def test_open_policy_details_page(self):
         self.policies_page.open_policy_details_page()
         expect(self.page).to_have_url(f"{self.URL}/policy_details/"
-                                      f"details?clusterName=management"
-                                      f"&id=weave.policies.containers-minimum-replica-count"
-                                      f"&name=Containers%20Minimum%20Replica%20Count")
+                                      "details?clusterName=management"
+                                      "&id=weave.policies.containers-minimum-replica-count"
+                                      "&name=Containers%20Minimum%20Replica%20Count")
